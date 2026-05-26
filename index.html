@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Life OS" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Life OS</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #141414;
+      --bg3: #1c1c1c;
+      --bg4: #242424;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.14);
+      --text: #f0f0f0;
+      --text2: #999;
+      --text3: #555;
+      --teal: #1D9E75;
+      --teal-light: #5DCAA5;
+      --blue: #378ADD;
+      --amber: #EF9F27;
+      --red: #E24B4A;
+      --purple: #AFA9EC;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overscroll-behavior: none;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 80px);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .header-left h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .header-left .date {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 1px;
+    }
+    .header-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: rgba(29,158,117,0.15);
+      color: var(--teal-light);
+      border: 1px solid rgba(29,158,117,0.3);
+    }
+
+    /* Glance row */
+    .glance {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .glance-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .glance-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 16px 16px 0 0;
+    }
+    .gc-teal::before { background: var(--teal); }
+    .gc-blue::before { background: var(--blue); }
+    .gc-amber::before { background: var(--amber); }
+    .gc-purple::before { background: var(--purple); }
+    .glance-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .glance-val { font-size: 26px; font-weight: 700; letter-spacing: -1px; color: var(--text); line-height: 1; }
+    .glance-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+    .glance-bar { height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 10px; }
+    .glance-bar-fill { height: 3px; border-radius: 2px; transition: width 0.8s ease; }
+
+    /* Section */
+    .section { margin-bottom: 16px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .card-title-icon { font-size: 15px; }
+    .card-action {
+      font-size: 12px;
+      color: var(--teal-light);
+      background: rgba(29,158,117,0.1);
+      border: 1px solid rgba(29,158,117,0.2);
+      border-radius: 10px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* LSAT */
+    .lsat-score-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+    .lsat-now { font-size: 48px; font-weight: 800; color: var(--teal-light); letter-spacing: -2px; line-height: 1; }
+    .lsat-arrow { font-size: 18px; color: var(--text3); }
+    .lsat-goal { font-size: 36px; font-weight: 700; color: var(--text2); letter-spacing: -1px; }
+    .lsat-track { height: 6px; background: var(--bg4); border-radius: 3px; margin: 10px 0 10px; }
+    .lsat-track-fill { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--teal), var(--teal-light)); transition: width 1s ease; }
+    .lsat-meta { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
+    .lsat-stats { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .lsat-stat { flex: 1; text-align: center; padding: 10px 6px; border-right: 1px solid var(--border); }
+    .lsat-stat:last-child { border-right: none; }
+    .lsat-stat-val { font-size: 16px; font-weight: 700; color: var(--text); }
+    .lsat-stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Log input */
+    .log-area { margin-top: 14px; }
+    .log-input-row { display: flex; gap: 8px; }
+    .log-input {
+      flex: 1;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+    }
+    .log-input::placeholder { color: var(--text3); }
+    .log-input:focus { border-color: rgba(29,158,117,0.5); }
+    .log-submit {
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .log-submit:active { opacity: 0.8; transform: scale(0.97); }
+    .log-entries { margin-top: 10px; }
+    .log-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .log-entry:last-child { border-bottom: none; }
+    .log-entry-text { color: var(--text2); flex: 1; }
+    .log-entry-meta { color: var(--text3); font-size: 11px; white-space: nowrap; margin-left: 8px; }
+
+    /* Habits */
+    .habit-list { display: flex; flex-direction: column; gap: 8px; }
+    .habit-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-user-select: none;
+    }
+    .habit-item.done {
+      border-color: rgba(29,158,117,0.4);
+      background: rgba(29,158,117,0.06);
+    }
+    .habit-left { display: flex; align-items: center; gap: 12px; }
+    .habit-emoji { font-size: 20px; }
+    .habit-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .habit-streak { font-size: 12px; color: var(--text3); margin-top: 1px; }
+    .habit-circle {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .habit-circle.checked { background: var(--teal); border-color: var(--teal); }
+    .habit-checkmark { color: white; font-size: 13px; display: none; }
+    .habit-circle.checked .habit-checkmark { display: block; }
+
+    /* Week strip */
+    .week-strip { display: flex; gap: 6px; margin-top: 14px; }
+    .week-day {
+      flex: 1;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text3);
+    }
+    .week-day.done { background: var(--teal); border-color: var(--teal); color: white; }
+    .week-day.today { border-color: var(--teal); color: var(--teal-light); }
+
+    /* Tasks */
+    .tab-row { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
+    .tab-row::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--text2);
+      cursor: pointer;
+    }
+    .tab-btn.active { background: var(--teal); border-color: var(--teal); color: white; }
+    .task-list { display: flex; flex-direction: column; gap: 4px; }
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .task-item:active { background: var(--bg3); }
+    .task-item.done .task-text { text-decoration: line-through; color: var(--text3); }
+    .task-box {
+      width: 18px; height: 18px;
+      border-radius: 5px;
+      border: 1.5px solid var(--border2);
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .task-box.checked { background: var(--blue); border-color: var(--blue); }
+    .task-box-check { color: white; font-size: 11px; display: none; }
+    .task-box.checked .task-box-check { display: block; }
+    .task-info { flex: 1; min-width: 0; }
+    .task-text { font-size: 14px; color: var(--text); line-height: 1.4; }
+    .task-meta { display: flex; align-items: center; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
+    .task-due { font-size: 11px; }
+    .due-urgent { color: var(--red); }
+    .due-soon { color: var(--amber); }
+    .due-ok { color: var(--text3); }
+    .task-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .tt-phil { background: rgba(99,153,34,0.15); color: #97C459; }
+    .tt-arthc { background: rgba(55,138,221,0.15); color: #85B7EB; }
+    .tt-lsat { background: rgba(29,158,117,0.15); color: var(--teal-light); }
+    .tt-other { background: var(--bg4); color: var(--text2); }
+
+    .add-task-row { display: flex; gap: 8px; margin-top: 12px; }
+    .add-task-input {
+      flex: 1;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+    }
+    .add-task-input::placeholder { color: var(--text3); }
+    .add-task-select {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 10px 10px;
+      font-size: 13px;
+      color: var(--text2);
+      outline: none;
+    }
+    .add-task-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 300;
+    }
+
+    /* Health */
+    .health-list { display: flex; flex-direction: column; }
+    .health-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .health-row:last-child { border-bottom: none; }
+    .health-icon-wrap {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .hi-sleep { background: rgba(175,169,236,0.15); }
+    .hi-steps { background: rgba(55,138,221,0.15); }
+    .hi-energy { background: rgba(239,159,39,0.15); }
+    .hi-hr { background: rgba(226,75,74,0.15); }
+    .health-info { flex: 1; }
+    .health-name { font-size: 12px; color: var(--text3); }
+    .health-val { font-size: 16px; font-weight: 600; color: var(--text); margin-top: 1px; }
+    .health-bar { height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 5px; }
+    .health-bar-fill { height: 3px; border-radius: 2px; transition: width 0.8s ease; }
+
+    /* Bottom nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 10px 0 calc(var(--safe-bottom) + 10px);
+      display: flex;
+      z-index: 100;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .nav-icon { font-size: 22px; color: var(--text3); transition: color 0.15s; }
+    .nav-label { font-size: 10px; color: var(--text3); font-weight: 500; transition: color 0.15s; }
+    .nav-item.active .nav-icon { color: var(--teal-light); }
+    .nav-item.active .nav-label { color: var(--teal-light); }
+
+    /* Pages */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Insights */
+    .insight-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--blue);
+    }
+    .insight-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-weight: 600; }
+    .insight-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+    .insight-teal { border-left-color: var(--teal); }
+    .insight-amber { border-left-color: var(--amber); }
+    .insight-purple { border-left-color: var(--purple); }
+
+    .big-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid var(--border2);
+      background: var(--bg3);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .big-btn:active { opacity: 0.7; }
+    .big-btn-teal { background: rgba(29,158,117,0.12); border-color: rgba(29,158,117,0.3); color: var(--teal-light); }
+
+    /* Scrollbar hide */
+    ::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- TODAY PAGE -->
+  <div class="page active" id="page-today">
+    <div class="header">
+      <div class="header-left">
+        <h1>Life OS</h1>
+        <div class="date" id="header-date"></div>
+      </div>
+      <div class="header-badge" id="lsat-countdown">— days</div>
+    </div>
+
+    <div class="section-title">At a glance</div>
+    <div class="glance">
+      <div class="glance-card gc-teal">
+        <div class="glance-label">LSAT today</div>
+        <div class="glance-val" id="g-study">0h</div>
+        <div class="glance-sub">goal: 2h</div>
+        <div class="glance-bar"><div class="glance-bar-fill" id="gb-study" style="width:0%;background:var(--teal)"></div></div>
+      </div>
+      <div class="glance-card gc-blue">
+        <div class="glance-label">Exercise</div>
+        <div class="glance-val" id="g-ex">—</div>
+        <div class="glance-sub" id="g-ex-sub">0 day streak</div>
+      </div>
+      <div class="glance-card gc-amber">
+        <div class="glance-label">Due soon</div>
+        <div class="glance-val" id="g-due">—</div>
+        <div class="glance-sub" id="g-due-sub">assignments</div>
+      </div>
+      <div class="glance-card gc-purple">
+        <div class="glance-label">Habits</div>
+        <div class="glance-val" id="g-habits">0/4</div>
+        <div class="glance-sub">done today</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">LSAT · 150 → 165</div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="card-title-icon">🧠</span> Progress</div>
+          <div class="card-action" onclick="goPage('lsat')">Details →</div>
+        </div>
+        <div class="lsat-score-row">
+          <span class="lsat-now">150</span>
+          <span class="lsat-arrow">→</span>
+          <span class="lsat-goal">165</span>
+        </div>
+        <div class="lsat-meta">+15 points needed · 7Sage diagnostic · August 10 exam</div>
+        <div class="lsat-track"><div class="lsat-track-fill" id="lsat-bar" style="width:0%"></div></div>
+        <div class="lsat-stats">
+          <div class="lsat-stat">
+            <div class="lsat-stat-val" id="ls-today">0h</div>
+            <div class="lsat-stat-label">Today</div>
+          </div>
+          <div class="lsat-stat">
+            <div class="lsat-stat-val" id="ls-week">0h</div>
+            <div class="lsat-stat-label">Week</div>
+          </div>
+          <div class="lsat-stat">
+            <div class="lsat-stat-val" id="ls-total">0h</div>
+            <div class="lsat-stat-label">Total</div>
+          </div>
+          <div class="lsat-stat">
+            <div class="lsat-stat-val" id="ls-section">—</div>
+            <div class="lsat-stat-label">Section</div>
+          </div>
+        </div>
+        <div class="log-area">
+          <div class="log-input-row">
+            <input class="log-input" id="study-input" type="text" placeholder='"2h logic games, felt good"' />
+            <button class="log-submit" onclick="logStudy()">Log</button>
+          </div>
+          <div class="log-entries" id="study-log"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Habits</div>
+      <div class="card">
+        <div class="habit-list" id="habit-list"></div>
+        <div class="week-strip" id="week-strip"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Health snapshot</div>
+      <div class="card">
+        <div class="card-header" style="margin-bottom:0">
+          <div class="card-title"><span class="card-title-icon">❤️</span> Today</div>
+          <div class="card-action" onclick="promptHealthSync()">Sync →</div>
+        </div>
+        <div class="health-list">
+          <div class="health-row">
+            <div class="health-icon-wrap hi-sleep">😴</div>
+            <div class="health-info">
+              <div class="health-name">Sleep</div>
+              <div class="health-val" id="h-sleep">— tap sync</div>
+              <div class="health-bar"><div class="health-bar-fill" id="hb-sleep" style="width:0%;background:var(--purple)"></div></div>
+            </div>
+          </div>
+          <div class="health-row">
+            <div class="health-icon-wrap hi-steps">🏃</div>
+            <div class="health-info">
+              <div class="health-name">Steps</div>
+              <div class="health-val" id="h-steps">—</div>
+              <div class="health-bar"><div class="health-bar-fill" id="hb-steps" style="width:0%;background:var(--blue)"></div></div>
+            </div>
+          </div>
+          <div class="health-row">
+            <div class="health-icon-wrap hi-energy">⚡</div>
+            <div class="health-info">
+              <div class="health-name">Active energy</div>
+              <div class="health-val" id="h-cal">—</div>
+              <div class="health-bar"><div class="health-bar-fill" id="hb-cal" style="width:0%;background:var(--amber)"></div></div>
+            </div>
+          </div>
+          <div class="health-row">
+            <div class="health-icon-wrap hi-hr">❤️</div>
+            <div class="health-info">
+              <div class="health-name">Resting HR</div>
+              <div class="health-val" id="h-hr">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LSAT PAGE -->
+  <div class="page" id="page-lsat">
+    <div class="header">
+      <div class="header-left">
+        <h1>LSAT</h1>
+        <div class="date">August 10, 2025 exam</div>
+      </div>
+      <div class="header-badge" id="lsat-days2">— days</div>
+    </div>
+    <div class="card">
+      <div class="lsat-score-row">
+        <span class="lsat-now">150</span>
+        <span class="lsat-arrow">→</span>
+        <span class="lsat-goal">165</span>
+      </div>
+      <div class="lsat-meta">+15 points needed · 7Sage diagnostic</div>
+      <div class="lsat-track"><div class="lsat-track-fill" id="lsat-bar2" style="width:0%"></div></div>
+      <div class="lsat-stats">
+        <div class="lsat-stat"><div class="lsat-stat-val" id="ls2-today">0h</div><div class="lsat-stat-label">Today</div></div>
+        <div class="lsat-stat"><div class="lsat-stat-val" id="ls2-week">0h</div><div class="lsat-stat-label">Week</div></div>
+        <div class="lsat-stat"><div class="lsat-stat-val" id="ls2-total">0h</div><div class="lsat-stat-label">Total</div></div>
+      </div>
+    </div>
+    <div class="section-title">Log a session</div>
+    <div class="card">
+      <div class="log-input-row">
+        <input class="log-input" id="study-input2" type="text" placeholder='"2h logic games, struggled"' />
+        <button class="log-submit" onclick="logStudy2()">Log</button>
+      </div>
+      <div class="log-entries" id="study-log2"></div>
+    </div>
+    <div class="section-title">All sessions</div>
+    <div class="card">
+      <div id="all-sessions"><div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">No sessions logged yet</div></div>
+    </div>
+  </div>
+
+  <!-- TASKS PAGE -->
+  <div class="page" id="page-tasks">
+    <div class="header">
+      <div class="header-left">
+        <h1>Assignments</h1>
+        <div class="date" id="tasks-meta"></div>
+      </div>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('all',this)">All</button>
+      <button class="tab-btn" onclick="switchTab('phil',this)">Phil 110</button>
+      <button class="tab-btn" onclick="switchTab('arthc',this)">ARTHC 202</button>
+      <button class="tab-btn" onclick="switchTab('lsat',this)">LSAT</button>
+      <button class="tab-btn" onclick="switchTab('other',this)">Other</button>
+    </div>
+    <div class="task-list" id="task-list"></div>
+    <div class="add-task-row">
+      <input class="add-task-input" id="new-task" type="text" placeholder="Add assignment..." />
+      <select class="add-task-select" id="new-tag">
+        <option value="phil">Phil</option>
+        <option value="arthc">ARTHC</option>
+        <option value="lsat">LSAT</option>
+        <option value="other">Other</option>
+      </select>
+      <button class="add-task-btn" onclick="addTask()">+</button>
+    </div>
+  </div>
+
+  <!-- INSIGHTS PAGE -->
+  <div class="page" id="page-insights">
+    <div class="header">
+      <div class="header-left">
+        <h1>Insights</h1>
+        <div class="date">AI-powered analysis</div>
+      </div>
+    </div>
+    <div class="insight-card insight-teal">
+      <div class="insight-label">LSAT pace</div>
+      <div class="insight-text" id="ins-pace">Loading...</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Today's focus</div>
+      <div class="insight-text">Log your study session and habits to unlock personalized daily insights from Claude.</div>
+    </div>
+    <div class="insight-card insight-amber">
+      <div class="insight-label">Upcoming deadlines</div>
+      <div class="insight-text" id="ins-deadlines">Loading...</div>
+    </div>
+    <div class="insight-card insight-purple">
+      <div class="insight-label">Habit streak</div>
+      <div class="insight-text" id="ins-habits">Log your habits to see streak analysis.</div>
+    </div>
+    <div style="margin-top:8px">
+      <button class="big-btn big-btn-teal" onclick="openClaude('analyze')">✨ Get AI insights from Claude</button>
+      <button class="big-btn" onclick="openClaude('plan')">📋 Plan tomorrow with Claude</button>
+      <button class="big-btn" onclick="openClaude('health')">❤️ Sync Apple Health data</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="goPage('today')" id="nav-today">
+    <div class="nav-icon">🏠</div>
+    <div class="nav-label">Today</div>
+  </div>
+  <div class="nav-item" onclick="goPage('lsat')" id="nav-lsat">
+    <div class="nav-icon">🧠</div>
+    <div class="nav-label">LSAT</div>
+  </div>
+  <div class="nav-item" onclick="goPage('tasks')" id="nav-tasks">
+    <div class="nav-icon">📋</div>
+    <div class="nav-label">Tasks</div>
+  </div>
+  <div class="nav-item" onclick="goPage('insights')" id="nav-insights">
+    <div class="nav-icon">✨</div>
+    <div class="nav-label">Insights</div>
+  </div>
+</div>
+
+<script>
+const EXAM_DATE = new Date('2025-08-10');
+const TODAY = new Date();
+
+const S = {
+  study: { today: 0, week: 0, total: 0, section: null },
+  studyLog: [],
+  habits: [
+    { id:'exercise', name:'Exercise', emoji:'🏃', streak:0, done:false },
+    { id:'lsat', name:'LSAT study', emoji:'🧠', streak:0, done:false },
+    { id:'classwork', name:'Classwork', emoji:'📚', streak:0, done:false },
+    { id:'sleep', name:'Sleep 7h+', emoji:'😴', streak:0, done:false },
+  ],
+  tasks: [
+    { id:1, text:'#10 Memes on Aurelius', tag:'phil', due:'May 27', done:false },
+    { id:2, text:'Third application: ethics date', tag:'phil', due:'May 27', done:false },
+    { id:3, text:'Visual Analysis 4', tag:'arthc', due:'May 28', done:false },
+    { id:4, text:'#11 General conference response', tag:'phil', due:'May 29', done:false },
+    { id:5, text:'#12 Gandhi Bio & Movie', tag:'phil', due:'Jun 1', done:false },
+    { id:6, text:'#13 Bonhoeffer & Fireproof', tag:'phil', due:'Jun 3', done:false },
+    { id:7, text:'Visual Analysis 5', tag:'arthc', due:'Jun 4', done:false },
+    { id:8, text:'#14 Phil memoir: Robinson & Levinas', tag:'phil', due:'Jun 5', done:false },
+    { id:9, text:'Fourth application: meet someone new', tag:'phil', due:'Jun 5', done:false },
+    { id:10, text:'#15 Questions on James', tag:'phil', due:'Jun 8', done:false },
+    { id:11, text:'Fifth application: worship service', tag:'phil', due:'Jun 8', done:false },
+    { id:12, text:'#16 Dialogue on problem of evil', tag:'phil', due:'Jun 10', done:false },
+    { id:13, text:'#17 Phil memoir on Nietzsche', tag:'phil', due:'Jun 12', done:false },
+    { id:14, text:'Sixth application: atheist interview', tag:'phil', due:'Jun 12', done:false },
+    { id:15, text:'#18 Something weird on C.S. Lewis & Shadowlands', tag:'phil', due:'Jun 15', done:false },
+    { id:16, text:'Read conclusion', tag:'phil', due:'Jun 15', done:false },
+    { id:17, text:'ARTHC Final Exam', tag:'arthc', due:'Jun 15', done:false },
+    { id:18, text:'Phil take-home final', tag:'phil', due:'Jun 17', done:false },
+    { id:19, text:'Phil in-class final', tag:'phil', due:'Jun 17', done:false },
+  ],
+  weekEx: [false,false,false,false,false,false,false],
+  activeTab: 'all',
+  activePage: 'today',
+};
+
+function daysUntil(dateStr) {
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  const [m, d] = dateStr.split(' ');
+  const date = new Date(2025, months[m], parseInt(d));
+  return Math.ceil((date - TODAY) / 86400000);
+}
+
+function dueLabel(dateStr) {
+  const d = daysUntil(dateStr);
+  if (d < 0) return { text:'overdue', cls:'due-urgent' };
+  if (d === 0) return { text:'due today', cls:'due-urgent' };
+  if (d === 1) return { text:'tomorrow', cls:'due-soon' };
+  if (d <= 4) return { text:'in '+d+' days', cls:'due-soon' };
+  return { text: dateStr, cls:'due-ok' };
+}
+
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  S.activePage = id;
+  if (id === 'tasks') renderTasks();
+  if (id === 'insights') renderInsights();
+  if (id === 'lsat') renderLSATPage();
+}
+
+function init() {
+  const opts = { weekday:'long', month:'long', day:'numeric' };
+  document.getElementById('header-date').textContent = TODAY.toLocaleDateString('en-US', opts);
+  const daysLeft = Math.ceil((EXAM_DATE - TODAY) / 86400000);
+  document.getElementById('lsat-countdown').textContent = daysLeft + ' days';
+  document.getElementById('lsat-days2').textContent = daysLeft + ' days';
+  const progress = Math.round(((150 - 120) / (165 - 120)) * 100);
+  document.getElementById('lsat-bar').style.width = progress + '%';
+  renderHabits();
+  renderWeekStrip();
+  renderTasks();
+  updateGlance();
+}
+
+function renderHabits() {
+  document.getElementById('habit-list').innerHTML = S.habits.map(h => `
+    <div class="habit-item ${h.done?'done':''}" onclick="toggleHabit('${h.id}')">
+      <div class="habit-left">
+        <div class="habit-emoji">${h.emoji}</div>
+        <div>
+          <div class="habit-name">${h.name}</div>
+          <div class="habit-streak">${h.streak > 0 ? h.streak+' day streak 🔥' : 'no streak yet'}</div>
+        </div>
+      </div>
+      <div class="habit-circle ${h.done?'checked':''}">
+        <span class="habit-checkmark">✓</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleHabit(id) {
+  const h = S.habits.find(x => x.id===id);
+  if (!h) return;
+  h.done = !h.done;
+  if (h.done) h.streak++; else if (h.streak > 0) h.streak--;
+  if (id === 'exercise') {
+    const i = (TODAY.getDay()+6)%7;
+    S.weekEx[i] = h.done;
+    renderWeekStrip();
+  }
+  renderHabits();
+  updateGlance();
+}
+
+function renderWeekStrip() {
+  const days = ['M','T','W','T','F','S','S'];
+  const todayIdx = (TODAY.getDay()+6)%7;
+  document.getElementById('week-strip').innerHTML = days.map((d,i) => {
+    const cls = S.weekEx[i] ? 'done' : i===todayIdx ? 'today' : '';
+    return `<div class="week-day ${cls}">${d}</div>`;
+  }).join('');
+}
+
+function renderTasks() {
+  let tasks = S.activeTab==='all' ? S.tasks : S.tasks.filter(t=>t.tag===S.activeTab);
+  const undone = tasks.filter(t=>!t.done).sort((a,b)=>daysUntil(a.due)-daysUntil(b.due));
+  const done = tasks.filter(t=>t.done);
+  const sorted = [...undone, ...done];
+  document.getElementById('task-list').innerHTML = sorted.map(t => {
+    const dl = dueLabel(t.due);
+    return `<div class="task-item ${t.done?'done':''}" onclick="toggleTask(${t.id})">
+      <div class="task-box ${t.done?'checked':''}"><span class="task-box-check">✓</span></div>
+      <div class="task-info">
+        <div class="task-text">${t.text}</div>
+        <div class="task-meta">
+          <span class="task-tag tt-${t.tag}">${t.tag==='phil'?'Phil 110':t.tag==='arthc'?'ARTHC 202':t.tag.toUpperCase()}</span>
+          <span class="task-due ${dl.cls}">${dl.text}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  const done2 = S.tasks.filter(t=>t.done).length;
+  document.getElementById('tasks-meta').textContent = done2+'/'+S.tasks.length+' completed';
+  updateGlance();
+}
+
+function switchTab(tab, el) {
+  S.activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderTasks();
+}
+
+function toggleTask(id) {
+  const t = S.tasks.find(x=>x.id===id);
+  if (t) { t.done = !t.done; renderTasks(); }
+}
+
+function addTask() {
+  const inp = document.getElementById('new-task');
+  const tag = document.getElementById('new-tag').value;
+  if (!inp.value.trim()) return;
+  S.tasks.push({ id:Date.now(), text:inp.value.trim(), tag, due:'TBD', done:false });
+  inp.value = '';
+  renderTasks();
+}
+
+function logStudy() {
+  const inp = document.getElementById('study-input');
+  _logStudy(inp);
+}
+function logStudy2() {
+  const inp = document.getElementById('study-input2');
+  _logStudy(inp);
+}
+
+function _logStudy(inp) {
+  const val = inp.value.trim();
+  if (!val) return;
+  const m = val.match(/(\d+(?:\.\d+)?)\s*h/i);
+  const hrs = m ? parseFloat(m[1]) : 1;
+  const secs = [['logic games','LG'],['lg','LG'],['logical reasoning','LR'],['lr','LR'],['reading comp','RC'],['rc','RC']];
+  for (const [k,v] of secs) { if (val.toLowerCase().includes(k)) { S.study.section=v; break; } }
+  S.study.today = +(S.study.today+hrs).toFixed(1);
+  S.study.week = +(S.study.week+hrs).toFixed(1);
+  S.study.total = +(S.study.total+hrs).toFixed(1);
+  const now = new Date();
+  S.studyLog.unshift({ text:val, hrs, time:now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) });
+  inp.value = '';
+  const lh = S.habits.find(x=>x.id==='lsat');
+  if (lh && !lh.done) { lh.done=true; lh.streak++; renderHabits(); }
+  updateStudyUI();
+  updateGlance();
+}
+
+function updateStudyUI() {
+  const h = S.study;
+  document.getElementById('g-study').textContent = h.today+'h';
+  document.getElementById('gb-study').style.width = Math.min(100,(h.today/2)*100)+'%';
+  document.getElementById('ls-today').textContent = h.today+'h';
+  document.getElementById('ls-week').textContent = h.week+'h';
+  document.getElementById('ls-total').textContent = h.total+'h';
+  document.getElementById('ls-section').textContent = h.section||'—';
+  const entries = S.studyLog.slice(0,3).map(e=>`
+    <div class="log-entry">
+      <span class="log-entry-text">${e.text}</span>
+      <span class="log-entry-meta">${e.hrs}h · ${e.time}</span>
+    </div>`).join('');
+  document.getElementById('study-log').innerHTML = entries;
+  if (document.getElementById('ls2-today')) {
+    document.getElementById('ls2-today').textContent = h.today+'h';
+    document.getElementById('ls2-week').textContent = h.week+'h';
+    document.getElementById('ls2-total').textContent = h.total+'h';
+    document.getElementById('study-log2').innerHTML = entries;
+    document.getElementById('all-sessions').innerHTML = S.studyLog.length
+      ? S.studyLog.map(e=>`<div class="log-entry"><span class="log-entry-text">${e.text}</span><span class="log-entry-meta">${e.hrs}h · ${e.time}</span></div>`).join('')
+      : '<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">No sessions yet</div>';
+  }
+}
+
+function renderLSATPage() {
+  const progress = Math.round(((150-120)/(165-120))*100);
+  if (document.getElementById('lsat-bar2')) document.getElementById('lsat-bar2').style.width = progress+'%';
+  updateStudyUI();
+}
+
+function updateGlance() {
+  const doneH = S.habits.filter(h=>h.done).length;
+  document.getElementById('g-habits').textContent = doneH+'/'+S.habits.length;
+  const exH = S.habits.find(h=>h.id==='exercise');
+  document.getElementById('g-ex').textContent = exH&&exH.done ? '✓' : '—';
+  document.getElementById('g-ex-sub').textContent = (exH?exH.streak:0)+' day streak';
+  const soon = S.tasks.filter(t=>!t.done && t.due!=='TBD' && daysUntil(t.due)>=0 && daysUntil(t.due)<=7);
+  document.getElementById('g-due').textContent = soon.length;
+  document.getElementById('g-due-sub').textContent = soon.length ? 'next '+days+'d' : 'this week';
+  function days() { return soon.length ? daysUntil(soon[0].due) : 7; }
+}
+
+function renderInsights() {
+  const daysLeft = Math.ceil((EXAM_DATE - TODAY) / 86400000);
+  const paceHrs = Math.round(daysLeft * 2);
+  document.getElementById('ins-pace').textContent =
+    daysLeft+' days until your August 10 exam. At 2h/day you need ~'+paceHrs+' more hours. You\'ve logged '+S.study.total+'h total. '+
+    (S.study.total > 0 ? 'Keep it up — consistency beats cramming.' : 'Log your first session to start tracking pace.');
+
+  const upcoming = S.tasks.filter(t=>!t.done && t.due!=='TBD' && daysUntil(t.due)>=0).slice(0,3);
+  document.getElementById('ins-deadlines').textContent = upcoming.length
+    ? upcoming.map(t=>t.text+' ('+t.due+')').join(' · ')
+    : 'All caught up! No urgent deadlines.';
+
+  const topStreak = [...S.habits].sort((a,b)=>b.streak-a.streak)[0];
+  document.getElementById('ins-habits').textContent = topStreak && topStreak.streak > 0
+    ? 'Best streak: '+topStreak.name+' at '+topStreak.streak+' days. '+S.habits.filter(h=>h.done).length+'/4 habits done today.'
+    : 'Check off your habits to build streaks. Consistency is everything this close to the exam.';
+}
+
+function promptHealthSync() {
+  alert('Open Claude on your iPhone, say:\n\n"Read my Apple Health data and tell me my sleep, steps, active energy, and resting heart rate from today"');
+}
+
+function openClaude(type) {
+  const msgs = {
+    analyze: 'Analyze my Life OS: studied '+S.study.today+'h today (total '+S.study.total+'h), '+S.habits.filter(h=>h.done).map(h=>h.name).join(', ')+' done. Give me 3 sharp insights and one recommendation.',
+    plan: 'Help me plan tomorrow. LSAT exam August 10. Today I studied '+S.study.today+'h. Upcoming: '+S.tasks.filter(t=>!t.done&&t.due!=='TBD'&&daysUntil(t.due)>=0).slice(0,3).map(t=>t.text+' ('+t.due+')').join(', ')+'. What should I prioritize?',
+    health: 'Read my Apple Health data for today — sleep duration, step count, active energy burned, and resting heart rate. Then give me a one-paragraph health summary.'
+  };
+  alert('Copy this into Claude:\n\n'+msgs[type]);
+}
+
+init();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>

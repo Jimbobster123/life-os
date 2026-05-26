@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "version": "1.0",
+    "lastUpdated": "",
+    "examDate": "2025-08-10",
+    "lsatDiagnostic": 150,
+    "lsatTarget": 165
+  },
+  "study": {
+    "todayHours": 0,
+    "weekHours": 0,
+    "totalHours": 0,
+    "lastSection": null,
+    "sessions": []
+  },
+  "habits": {
+    "exercise": { "streak": 0, "doneToday": false },
+    "lsat": { "streak": 0, "doneToday": false },
+    "classwork": { "streak": 0, "doneToday": false },
+    "sleep": { "streak": 0, "doneToday": false }
+  },
+  "weekExercise": [false, false, false, false, false, false, false],
+  "health": {
+    "sleep": null,
+    "steps": null,
+    "activeEnergy": null,
+    "restingHR": null,
+    "lastSynced": null
+  },
+  "tasks": []
+}
