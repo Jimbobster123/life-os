@@ -6,27 +6,27 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Life OS" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#f5f5f7" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon-192.png" />
   <title>Life OS</title>
   <style>
     :root {
-      --bg: #0a0a0a;
-      --bg2: #141414;
-      --bg3: #1c1c1c;
-      --bg4: #242424;
-      --border: rgba(255,255,255,0.08);
-      --border2: rgba(255,255,255,0.14);
-      --text: #f0f0f0;
-      --text2: #999;
-      --text3: #555;
+      --bg: #f5f5f7;
+      --bg2: #ffffff;
+      --bg3: #f0f0f2;
+      --bg4: #e5e5ea;
+      --border: rgba(0,0,0,0.08);
+      --border2: rgba(0,0,0,0.14);
+      --text: #1c1c1e;
+      --text2: #636366;
+      --text3: #aeaeb2;
       --teal: #1D9E75;
-      --teal-light: #5DCAA5;
-      --blue: #378ADD;
-      --amber: #EF9F27;
-      --red: #E24B4A;
-      --purple: #AFA9EC;
+      --teal-light: #17866A;
+      --blue: #2C7DD1;
+      --amber: #C07A0A;
+      --red: #C8302F;
+      --purple: #7B74D6;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -377,7 +377,7 @@
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      background: rgba(10,10,10,0.92);
+      background: rgba(245,245,247,0.92);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border);
@@ -735,10 +735,10 @@ function daysUntil(dateStr) {
 
 function dueLabel(dateStr) {
   const d = daysUntil(dateStr);
-  if (d < 0) return { text:'overdue', cls:'due-urgent' };
-  if (d === 0) return { text:'due today', cls:'due-urgent' };
-  if (d === 1) return { text:'tomorrow', cls:'due-soon' };
-  if (d <= 4) return { text:'in '+d+' days', cls:'due-soon' };
+  if (d < 0) return { text: dateStr + ' · overdue', cls:'due-urgent' };
+  if (d === 0) return { text: dateStr + ' · today', cls:'due-urgent' };
+  if (d === 1) return { text: dateStr + ' · tomorrow', cls:'due-soon' };
+  if (d <= 4) return { text: dateStr + ' · in '+d+' days', cls:'due-soon' };
   return { text: dateStr, cls:'due-ok' };
 }
 
