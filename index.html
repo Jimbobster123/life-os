@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Life OS" />
   <meta name="theme-color" content="#f5f5f7" />
   <link rel="manifest" href="manifest.json" />
@@ -12,449 +12,361 @@
   <title>Life OS</title>
   <style>
     :root {
-      --bg: #f5f5f7;
-      --bg2: #ffffff;
-      --bg3: #f0f0f2;
-      --bg4: #e5e5ea;
-      --border: rgba(0,0,0,0.08);
-      --border2: rgba(0,0,0,0.14);
-      --text: #1c1c1e;
-      --text2: #636366;
-      --text3: #aeaeb2;
-      --teal: #1D9E75;
-      --teal-light: #17866A;
-      --blue: #2C7DD1;
-      --amber: #C07A0A;
-      --red: #C8302F;
-      --purple: #7B74D6;
-      --safe-top: env(safe-area-inset-top, 0px);
+      --bg:      #f5f5f7;
+      --bg2:     #ffffff;
+      --bg3:     #f0f0f2;
+      --bg4:     #e5e5ea;
+      --border:  rgba(0,0,0,0.08);
+      --border2: rgba(0,0,0,0.13);
+      --shadow:  0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --text:    #1c1c1e;
+      --text2:   #636366;
+      --text3:   #aeaeb2;
+      --teal:        #1a9b72;
+      --teal-bg:     rgba(26,155,114,0.09);
+      --teal-border: rgba(26,155,114,0.22);
+      --blue:        #2c7dd1;
+      --blue-bg:     rgba(44,125,209,0.09);
+      --blue-border: rgba(44,125,209,0.22);
+      --amber:        #b07010;
+      --amber-bg:     rgba(176,112,16,0.09);
+      --amber-border: rgba(176,112,16,0.22);
+      --red:        #c0392b;
+      --red-bg:     rgba(192,57,43,0.09);
+      --purple:        #7b5ea7;
+      --purple-bg:     rgba(123,94,167,0.09);
+      --purple-border: rgba(123,94,167,0.22);
+      --green-tag: #4a7c1f;
+      --green-tag-bg: rgba(74,124,31,0.09);
+      --safe-top:    env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       overscroll-behavior: none;
+      -webkit-font-smoothing: antialiased;
     }
 
     .app {
       max-width: 480px;
       margin: 0 auto;
-      padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 80px);
+      padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 88px);
     }
 
-    /* Header */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .header-left h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
-    .header-left .date {
-      font-size: 13px;
-      color: var(--text2);
-      margin-top: 1px;
-    }
+    /* ── Header ─────────────────────────────────── */
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .header-title { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
+    .header-sub   { font-size: 13px; color: var(--text2); margin-top: 2px; }
     .header-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 5px 12px;
-      border-radius: 20px;
-      background: rgba(29,158,117,0.15);
-      color: var(--teal-light);
-      border: 1px solid rgba(29,158,117,0.3);
+      font-size: 11px; font-weight: 600; padding: 5px 12px;
+      border-radius: 20px; background: var(--teal-bg);
+      color: var(--teal); border: 1px solid var(--teal-border);
     }
 
-    /* Glance row */
-    .glance {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
+    /* ── Section label ───────────────────────────── */
+    .section-label {
+      font-size: 10px; font-weight: 700; color: var(--text3);
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px;
     }
-    .glance-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .glance-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      border-radius: 16px 16px 0 0;
-    }
-    .gc-teal::before { background: var(--teal); }
-    .gc-blue::before { background: var(--blue); }
-    .gc-amber::before { background: var(--amber); }
-    .gc-purple::before { background: var(--purple); }
-    .glance-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-    .glance-val { font-size: 26px; font-weight: 700; letter-spacing: -1px; color: var(--text); line-height: 1; }
-    .glance-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
-    .glance-bar { height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 10px; }
-    .glance-bar-fill { height: 3px; border-radius: 2px; transition: width 0.8s ease; }
-
-    /* Section */
     .section { margin-bottom: 16px; }
-    .section-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 10px;
-    }
 
-    /* Card */
+    /* ── Card ────────────────────────────────────── */
     .card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 12px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 18px; padding: 16px; margin-bottom: 12px;
+      box-shadow: var(--shadow);
     }
     .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 14px;
     }
-    .card-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 7px;
+    .card-title { font-size: 14px; font-weight: 600; }
+    .card-link  { font-size: 12px; color: var(--teal); font-weight: 500; cursor: pointer; }
+
+    /* ── Glance ──────────────────────────────────── */
+    .glance { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .glance-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 14px; box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
     }
-    .card-title-icon { font-size: 15px; }
-    .card-action {
-      font-size: 12px;
-      color: var(--teal-light);
-      background: rgba(29,158,117,0.1);
-      border: 1px solid rgba(29,158,117,0.2);
-      border-radius: 10px;
-      padding: 4px 10px;
-      cursor: pointer;
-      font-weight: 500;
+    .glance-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; border-radius: 16px 16px 0 0;
+    }
+    .gc-teal::before   { background: var(--teal); }
+    .gc-blue::before   { background: var(--blue); }
+    .gc-amber::before  { background: var(--amber); }
+    .gc-purple::before { background: var(--purple); }
+    .glance-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-weight: 600; }
+    .glance-val   { font-size: 26px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+    .glance-sub   { font-size: 11px; color: var(--text2); margin-top: 4px; }
+    .glance-bar   { height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 10px; }
+    .glance-bar-fill { height: 3px; border-radius: 2px; transition: width 0.8s ease; }
+
+    /* ── LSAT score ───────────────────────────────── */
+    .score-row  { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+    .score-now  { font-size: 48px; font-weight: 800; color: var(--teal); letter-spacing: -2px; line-height: 1; }
+    .score-arrow{ font-size: 20px; color: var(--text3); }
+    .score-goal { font-size: 36px; font-weight: 700; color: var(--text2); letter-spacing: -1.5px; }
+    .score-meta { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+    .score-track{ height: 5px; background: var(--bg4); border-radius: 3px; margin: 8px 0 14px; }
+    .score-fill { height: 5px; border-radius: 3px; background: linear-gradient(90deg, var(--teal), #4ecfa0); transition: width 1s ease; }
+
+    .stat-row { display: flex; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .stat-item { flex: 1; text-align: center; padding: 10px 4px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-val   { font-size: 16px; font-weight: 700; }
+    .stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Inputs ──────────────────────────────────── */
+    .input-row { display: flex; gap: 8px; }
+    .input-field {
+      flex: 1; background: var(--bg3); border: 1px solid var(--border2);
+      border-radius: 12px; padding: 10px 14px; font-size: 14px;
+      color: var(--text); outline: none; font-family: inherit;
+    }
+    .input-field::placeholder { color: var(--text3); }
+    .input-field:focus { border-color: var(--teal); background: var(--bg2); }
+    .btn-teal {
+      background: var(--teal); color: white; border: none;
+      border-radius: 12px; padding: 10px 16px; font-size: 14px;
+      font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;
+    }
+    .btn-teal:active { opacity: 0.85; }
+    .btn-blue {
+      background: var(--blue); color: white; border: none;
+      border-radius: 12px; padding: 10px 16px; font-size: 20px;
+      font-weight: 300; cursor: pointer; line-height: 1;
     }
 
-    /* LSAT */
-    .lsat-score-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
-    .lsat-now { font-size: 48px; font-weight: 800; color: var(--teal-light); letter-spacing: -2px; line-height: 1; }
-    .lsat-arrow { font-size: 18px; color: var(--text3); }
-    .lsat-goal { font-size: 36px; font-weight: 700; color: var(--text2); letter-spacing: -1px; }
-    .lsat-track { height: 6px; background: var(--bg4); border-radius: 3px; margin: 10px 0 10px; }
-    .lsat-track-fill { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--teal), var(--teal-light)); transition: width 1s ease; }
-    .lsat-meta { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
-    .lsat-stats { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    .lsat-stat { flex: 1; text-align: center; padding: 10px 6px; border-right: 1px solid var(--border); }
-    .lsat-stat:last-child { border-right: none; }
-    .lsat-stat-val { font-size: 16px; font-weight: 700; color: var(--text); }
-    .lsat-stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+    /* ── Log list ────────────────────────────────── */
+    .log-list { margin-top: 10px; }
+    .log-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-text { color: var(--text2); flex: 1; }
+    .log-meta { color: var(--text3); font-size: 11px; white-space: nowrap; margin-left: 8px; }
 
-    /* Log input */
-    .log-area { margin-top: 14px; }
-    .log-input-row { display: flex; gap: 8px; }
-    .log-input {
-      flex: 1;
-      background: var(--bg3);
-      border: 1px solid var(--border2);
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 14px;
-      color: var(--text);
-      outline: none;
-    }
-    .log-input::placeholder { color: var(--text3); }
-    .log-input:focus { border-color: rgba(29,158,117,0.5); }
-    .log-submit {
-      background: var(--teal);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 10px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .log-submit:active { opacity: 0.8; transform: scale(0.97); }
-    .log-entries { margin-top: 10px; }
-    .log-entry {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .log-entry:last-child { border-bottom: none; }
-    .log-entry-text { color: var(--text2); flex: 1; }
-    .log-entry-meta { color: var(--text3); font-size: 11px; white-space: nowrap; margin-left: 8px; }
+    /* ── Habits ──────────────────────────────────── */
+    .habit-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .habit-ring-wrap { display: flex; align-items: center; gap: 6px; }
+    .ring-label { font-size: 12px; color: var(--text2); font-weight: 500; }
 
-    /* Habits */
-    .habit-list { display: flex; flex-direction: column; gap: 8px; }
+    .habit-list { display: flex; flex-direction: column; gap: 1px; }
     .habit-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 13px 14px;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
+      display: flex; align-items: center; padding: 11px 8px;
+      border-radius: 12px; cursor: pointer; transition: background 0.15s;
       -webkit-user-select: none;
     }
-    .habit-item.done {
-      border-color: rgba(29,158,117,0.4);
-      background: rgba(29,158,117,0.06);
-    }
-    .habit-left { display: flex; align-items: center; gap: 12px; }
-    .habit-emoji { font-size: 20px; }
-    .habit-name { font-size: 14px; font-weight: 500; color: var(--text); }
-    .habit-streak { font-size: 12px; color: var(--text3); margin-top: 1px; }
-    .habit-circle {
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      border: 2px solid var(--border2);
+    .habit-item:active { background: var(--bg3); }
+    .habit-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border2); flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
-      flex-shrink: 0;
+      transition: all 0.2s; margin-right: 12px;
     }
-    .habit-circle.checked { background: var(--teal); border-color: var(--teal); }
-    .habit-checkmark { color: white; font-size: 13px; display: none; }
-    .habit-circle.checked .habit-checkmark { display: block; }
-
-    /* Week strip */
-    .week-strip { display: flex; gap: 6px; margin-top: 14px; }
-    .week-day {
-      flex: 1;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text3);
+    .habit-check.done { background: var(--teal); border-color: var(--teal); }
+    .habit-check-mark { font-size: 11px; color: white; display: none; font-weight: 700; }
+    .habit-check.done .habit-check-mark { display: block; }
+    .habit-info { flex: 1; min-width: 0; }
+    .habit-name   { font-size: 14px; font-weight: 500; }
+    .habit-streak { font-size: 11px; color: var(--text3); margin-top: 1px; }
+    .habit-dots   { display: flex; gap: 4px; margin-left: 10px; }
+    .h-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--bg4); border: 1px solid var(--border);
+      transition: background 0.2s;
     }
-    .week-day.done { background: var(--teal); border-color: var(--teal); color: white; }
-    .week-day.today { border-color: var(--teal); color: var(--teal-light); }
+    .h-dot.done    { background: var(--teal); border-color: var(--teal); }
+    .h-dot.is-today { border-color: var(--teal); }
 
-    /* Tasks */
+    /* ── Health ──────────────────────────────────── */
+    .health-list { display: flex; flex-direction: column; }
+    .health-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .health-row:last-child { border-bottom: none; }
+    .health-pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .hp-sleep  { background: var(--purple); }
+    .hp-steps  { background: var(--blue); }
+    .hp-energy { background: var(--amber); }
+    .hp-hr     { background: var(--red); }
+    .health-info { flex: 1; }
+    .health-name { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .health-val  { font-size: 15px; font-weight: 600; margin-top: 1px; }
+    .health-bar  { height: 2px; background: var(--bg4); border-radius: 2px; margin-top: 5px; }
+    .health-bar-fill { height: 2px; border-radius: 2px; }
+
+    /* ── Study chart ─────────────────────────────── */
+    .chart-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .chart-outer { position: relative; margin-bottom: 4px; }
+    .chart-bars  { display: flex; gap: 6px; align-items: flex-end; }
+    .chart-goal  {
+      position: absolute; left: 0; right: 0;
+      border-top: 1px dashed rgba(0,0,0,0.15); pointer-events: none;
+    }
+    .chart-goal-tag {
+      position: absolute; right: 0; top: -9px;
+      font-size: 9px; color: var(--text3); font-weight: 600;
+    }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bar-inner { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.7s cubic-bezier(.4,0,.2,1); }
+    .bar-day { font-size: 10px; font-weight: 500; color: var(--text3); }
+    .bar-day.today { color: var(--teal); font-weight: 700; }
+    .bar-hrs { font-size: 9px; color: var(--text3); min-height: 11px; }
+
+    /* ── Tasks ───────────────────────────────────── */
+    .due-banner {
+      background: var(--amber-bg); border: 1px solid var(--amber-border);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 12px;
+    }
+    .due-banner-title { font-size: 10px; font-weight: 700; color: var(--amber); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .due-banner-item  { font-size: 13px; color: var(--text); line-height: 1.7; }
+
+    .progress-wrap  { margin-bottom: 14px; }
+    .progress-meta  { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 5px; }
+    .progress-track { height: 5px; background: var(--bg4); border-radius: 3px; }
+    .progress-fill  { height: 5px; border-radius: 3px; background: var(--teal); transition: width 0.6s ease; }
+
     .tab-row { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
     .tab-row::-webkit-scrollbar { display: none; }
     .tab-btn {
-      flex-shrink: 0;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border2);
-      background: transparent;
-      color: var(--text2);
-      cursor: pointer;
+      flex-shrink: 0; font-size: 12px; font-weight: 500;
+      padding: 6px 14px; border-radius: 20px;
+      border: 1px solid var(--border2); background: transparent;
+      color: var(--text2); cursor: pointer; font-family: inherit;
     }
-    .tab-btn.active { background: var(--teal); border-color: var(--teal); color: white; }
-    .task-list { display: flex; flex-direction: column; gap: 4px; }
+    .tab-btn.active { background: var(--teal); border-color: var(--teal); color: white; font-weight: 600; }
+
+    .task-list { display: flex; flex-direction: column; gap: 1px; margin-bottom: 12px; }
     .task-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 10px 8px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.15s;
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 6px; border-radius: 12px; transition: background 0.15s;
     }
-    .task-item:active { background: var(--bg3); }
+    .task-item:hover { background: var(--bg3); }
     .task-item.done .task-text { text-decoration: line-through; color: var(--text3); }
     .task-box {
-      width: 18px; height: 18px;
-      border-radius: 5px;
-      border: 1.5px solid var(--border2);
-      flex-shrink: 0;
-      margin-top: 1px;
+      width: 18px; height: 18px; border-radius: 5px;
+      border: 1.5px solid var(--border2); flex-shrink: 0; margin-top: 2px;
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
+      transition: all 0.2s; cursor: pointer;
     }
     .task-box.checked { background: var(--blue); border-color: var(--blue); }
-    .task-box-check { color: white; font-size: 11px; display: none; }
-    .task-box.checked .task-box-check { display: block; }
-    .task-info { flex: 1; min-width: 0; }
-    .task-text { font-size: 14px; color: var(--text); line-height: 1.4; }
+    .task-check { color: white; font-size: 11px; display: none; font-weight: 700; }
+    .task-box.checked .task-check { display: block; }
+    .task-info { flex: 1; min-width: 0; cursor: pointer; }
+    .task-text { font-size: 14px; line-height: 1.4; }
     .task-meta { display: flex; align-items: center; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
-    .task-due { font-size: 11px; }
-    .due-urgent { color: var(--red); }
-    .due-soon { color: var(--amber); }
-    .due-ok { color: var(--text3); }
     .task-tag {
-      font-size: 10px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 10px;
+      font-size: 10px; font-weight: 700; padding: 2px 7px;
+      border-radius: 8px; letter-spacing: 0.03em;
     }
-    .tt-phil { background: rgba(99,153,34,0.15); color: #97C459; }
-    .tt-arthc { background: rgba(55,138,221,0.15); color: #85B7EB; }
-    .tt-lsat { background: rgba(29,158,117,0.15); color: var(--teal-light); }
-    .tt-other { background: var(--bg4); color: var(--text2); }
+    .tt-phil  { background: var(--green-tag-bg); color: var(--green-tag); }
+    .tt-arthc { background: var(--blue-bg);      color: var(--blue); }
+    .tt-lsat  { background: var(--teal-bg);      color: var(--teal); }
+    .tt-other { background: var(--bg3);          color: var(--text2); }
+    .task-due { font-size: 11px; }
+    .due-urgent { color: var(--red);   font-weight: 600; }
+    .due-soon   { color: var(--amber); font-weight: 500; }
+    .due-ok     { color: var(--text3); }
+    .task-del {
+      width: 24px; height: 24px; border-radius: 50%; background: transparent;
+      border: none; color: var(--text3); font-size: 17px; cursor: pointer;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s; font-family: inherit; line-height: 1;
+    }
+    .task-del:hover { background: var(--red-bg); color: var(--red); }
 
-    .add-task-row { display: flex; gap: 8px; margin-top: 12px; }
-    .add-task-input {
-      flex: 1;
-      background: var(--bg3);
-      border: 1px solid var(--border2);
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 14px;
-      color: var(--text);
-      outline: none;
-    }
-    .add-task-input::placeholder { color: var(--text3); }
-    .add-task-select {
-      background: var(--bg3);
-      border: 1px solid var(--border2);
-      border-radius: 12px;
-      padding: 10px 10px;
-      font-size: 13px;
-      color: var(--text2);
-      outline: none;
-    }
-    .add-task-btn {
-      background: var(--blue);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 10px 16px;
-      font-size: 18px;
-      cursor: pointer;
-      font-weight: 300;
+    .add-task-row { display: flex; gap: 8px; }
+    .add-task-sel {
+      background: var(--bg3); border: 1px solid var(--border2);
+      border-radius: 12px; padding: 10px 8px; font-size: 13px;
+      color: var(--text2); outline: none; font-family: inherit;
     }
 
-    /* Health */
-    .health-list { display: flex; flex-direction: column; }
-    .health-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 11px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .health-row:last-child { border-bottom: none; }
-    .health-icon-wrap {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 17px;
-      flex-shrink: 0;
-    }
-    .hi-sleep { background: rgba(175,169,236,0.15); }
-    .hi-steps { background: rgba(55,138,221,0.15); }
-    .hi-energy { background: rgba(239,159,39,0.15); }
-    .hi-hr { background: rgba(226,75,74,0.15); }
-    .health-info { flex: 1; }
-    .health-name { font-size: 12px; color: var(--text3); }
-    .health-val { font-size: 16px; font-weight: 600; color: var(--text); margin-top: 1px; }
-    .health-bar { height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 5px; }
-    .health-bar-fill { height: 3px; border-radius: 2px; transition: width 0.8s ease; }
-
-    /* Bottom nav */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(245,245,247,0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--border);
-      padding: 10px 0 calc(var(--safe-bottom) + 10px);
-      display: flex;
-      z-index: 100;
-    }
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      cursor: pointer;
-      padding: 4px 0;
-    }
-    .nav-icon { font-size: 22px; color: var(--text3); transition: color 0.15s; }
-    .nav-label { font-size: 10px; color: var(--text3); font-weight: 500; transition: color 0.15s; }
-    .nav-item.active .nav-icon { color: var(--teal-light); }
-    .nav-item.active .nav-label { color: var(--teal-light); }
-
-    /* Pages */
-    .page { display: none; }
-    .page.active { display: block; }
-
-    /* Insights */
+    /* ── Insights ────────────────────────────────── */
     .insight-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      border-left: 3px solid var(--blue);
+      background: var(--bg2); border: 1px solid var(--border);
+      border-left: 3px solid var(--blue); border-radius: 16px;
+      padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow);
     }
-    .insight-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-weight: 600; }
-    .insight-text { font-size: 14px; color: var(--text); line-height: 1.6; }
-    .insight-teal { border-left-color: var(--teal); }
-    .insight-amber { border-left-color: var(--amber); }
-    .insight-purple { border-left-color: var(--purple); }
+    .insight-card.i-teal   { border-left-color: var(--teal); }
+    .insight-card.i-amber  { border-left-color: var(--amber); }
+    .insight-card.i-purple { border-left-color: var(--purple); }
+    .insight-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-weight: 700; }
+    .insight-text  { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+    .hh-grid { margin-top: 12px; }
+    .hh-day-row { display: flex; margin-bottom: 4px; margin-left: 88px; gap: 5px; }
+    .hh-day-lbl { font-size: 9px; color: var(--text3); width: 10px; text-align: center; }
+    .hh-row     { display: flex; align-items: center; margin-bottom: 6px; }
+    .hh-name    { font-size: 12px; color: var(--text2); font-weight: 500; width: 88px; flex-shrink: 0; }
+    .hh-dots    { display: flex; gap: 5px; }
+    .hh-dot     { width: 10px; height: 10px; border-radius: 3px; background: var(--bg4); }
+    .hh-dot.done { background: var(--teal); }
 
     .big-btn {
-      width: 100%;
-      padding: 15px;
-      border-radius: 16px;
-      border: 1px solid var(--border2);
-      background: var(--bg3);
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 10px;
-      text-align: center;
+      width: 100%; padding: 14px; border-radius: 14px;
+      border: 1px solid var(--border2); background: var(--bg3);
+      color: var(--text); font-size: 14px; font-weight: 500;
+      cursor: pointer; margin-bottom: 8px; text-align: left;
+      font-family: inherit; display: block;
     }
-    .big-btn:active { opacity: 0.7; }
-    .big-btn-teal { background: rgba(29,158,117,0.12); border-color: rgba(29,158,117,0.3); color: var(--teal-light); }
+    .big-btn:active { opacity: 0.8; }
+    .big-btn.accent { background: var(--teal-bg); border-color: var(--teal-border); color: var(--teal); font-weight: 600; }
 
-    /* Scrollbar hide */
+    /* ── Bottom nav ──────────────────────────────── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(245,245,247,0.94);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border);
+      padding: 10px 0 calc(var(--safe-bottom) + 10px);
+      display: flex; z-index: 100;
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 4px; cursor: pointer; padding: 4px 0;
+    }
+    .nav-label { font-size: 11px; color: var(--text3); font-weight: 500; transition: color 0.15s; }
+    .nav-pip   { width: 4px; height: 4px; border-radius: 50%; background: transparent; transition: background 0.15s; }
+    .nav-item.active .nav-label { color: var(--teal); font-weight: 700; }
+    .nav-item.active .nav-pip   { background: var(--teal); }
+
+    /* ── Pages ───────────────────────────────────── */
+    .page { display: none; }
+    .page.active { display: block; }
     ::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body>
-
 <div class="app">
-  <!-- TODAY PAGE -->
+
+  <!-- ══ TODAY ══════════════════════════════════════════════════ -->
   <div class="page active" id="page-today">
+
     <div class="header">
-      <div class="header-left">
-        <h1>Life OS</h1>
-        <div class="date" id="header-date"></div>
+      <div>
+        <div class="header-title">Life OS</div>
+        <div class="header-sub" id="header-date"></div>
       </div>
       <div class="header-badge" id="lsat-countdown">— days</div>
     </div>
 
-    <div class="section-title">At a glance</div>
+    <div class="section-label">At a glance</div>
     <div class="glance">
       <div class="glance-card gc-teal">
-        <div class="glance-label">LSAT today</div>
+        <div class="glance-label">Study today</div>
         <div class="glance-val" id="g-study">0h</div>
         <div class="glance-sub">goal: 2h</div>
         <div class="glance-bar"><div class="glance-bar-fill" id="gb-study" style="width:0%;background:var(--teal)"></div></div>
@@ -465,7 +377,7 @@
         <div class="glance-sub" id="g-ex-sub">0 day streak</div>
       </div>
       <div class="glance-card gc-amber">
-        <div class="glance-label">Due soon</div>
+        <div class="glance-label">Due this week</div>
         <div class="glance-val" id="g-due">—</div>
         <div class="glance-sub" id="g-due-sub">assignments</div>
       </div>
@@ -477,65 +389,59 @@
     </div>
 
     <div class="section">
-      <div class="section-title">LSAT · 150 → 165</div>
+      <div class="section-label">LSAT · 150 → 165</div>
       <div class="card">
         <div class="card-header">
-          <div class="card-title"><span class="card-title-icon">🧠</span> Progress</div>
-          <div class="card-action" onclick="goPage('lsat')">Details →</div>
+          <div class="card-title">Progress</div>
+          <div class="card-link" onclick="goPage('lsat')">Details →</div>
         </div>
-        <div class="lsat-score-row">
-          <span class="lsat-now">150</span>
-          <span class="lsat-arrow">→</span>
-          <span class="lsat-goal">165</span>
+        <div class="score-row">
+          <span class="score-now">150</span>
+          <span class="score-arrow">→</span>
+          <span class="score-goal">165</span>
         </div>
-        <div class="lsat-meta">+15 points needed · 7Sage diagnostic · August 10 exam</div>
-        <div class="lsat-track"><div class="lsat-track-fill" id="lsat-bar" style="width:0%"></div></div>
-        <div class="lsat-stats">
-          <div class="lsat-stat">
-            <div class="lsat-stat-val" id="ls-today">0h</div>
-            <div class="lsat-stat-label">Today</div>
-          </div>
-          <div class="lsat-stat">
-            <div class="lsat-stat-val" id="ls-week">0h</div>
-            <div class="lsat-stat-label">Week</div>
-          </div>
-          <div class="lsat-stat">
-            <div class="lsat-stat-val" id="ls-total">0h</div>
-            <div class="lsat-stat-label">Total</div>
-          </div>
-          <div class="lsat-stat">
-            <div class="lsat-stat-val" id="ls-section">—</div>
-            <div class="lsat-stat-label">Section</div>
-          </div>
+        <div class="score-meta">+15 pts needed · 7Sage · Aug 10 exam</div>
+        <div class="score-track"><div class="score-fill" id="lsat-bar" style="width:0%"></div></div>
+        <div class="stat-row">
+          <div class="stat-item"><div class="stat-val" id="ls-today">0h</div><div class="stat-label">Today</div></div>
+          <div class="stat-item"><div class="stat-val" id="ls-week">0h</div><div class="stat-label">Week</div></div>
+          <div class="stat-item"><div class="stat-val" id="ls-total">0h</div><div class="stat-label">Total</div></div>
+          <div class="stat-item"><div class="stat-val" id="ls-section">—</div><div class="stat-label">Focus</div></div>
         </div>
-        <div class="log-area">
-          <div class="log-input-row">
-            <input class="log-input" id="study-input" type="text" placeholder='"2h logic games, felt good"' />
-            <button class="log-submit" onclick="logStudy()">Log</button>
+        <div style="margin-top:14px">
+          <div class="input-row">
+            <input class="input-field" id="study-input" type="text" placeholder='"2h logic games, felt strong"' />
+            <button class="btn-teal" onclick="logStudy('study-input')">Log</button>
           </div>
-          <div class="log-entries" id="study-log"></div>
+          <div class="log-list" id="study-log"></div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">Habits</div>
+      <div class="section-label">Habits</div>
       <div class="card">
+        <div class="habit-header">
+          <div class="card-title">Today</div>
+          <div class="habit-ring-wrap">
+            <div id="habit-ring"></div>
+            <div class="ring-label" id="habit-ring-label">0 / 4</div>
+          </div>
+        </div>
         <div class="habit-list" id="habit-list"></div>
-        <div class="week-strip" id="week-strip"></div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">Health snapshot</div>
+      <div class="section-label">Health</div>
       <div class="card">
         <div class="card-header" style="margin-bottom:0">
-          <div class="card-title"><span class="card-title-icon">❤️</span> Today</div>
-          <div class="card-action" onclick="promptHealthSync()">Sync →</div>
+          <div class="card-title">Snapshot</div>
+          <div class="card-link" onclick="promptHealthSync()">Sync →</div>
         </div>
         <div class="health-list">
           <div class="health-row">
-            <div class="health-icon-wrap hi-sleep">😴</div>
+            <div class="health-pip hp-sleep"></div>
             <div class="health-info">
               <div class="health-name">Sleep</div>
               <div class="health-val" id="h-sleep">— tap sync</div>
@@ -543,7 +449,7 @@
             </div>
           </div>
           <div class="health-row">
-            <div class="health-icon-wrap hi-steps">🏃</div>
+            <div class="health-pip hp-steps"></div>
             <div class="health-info">
               <div class="health-name">Steps</div>
               <div class="health-val" id="h-steps">—</div>
@@ -551,7 +457,7 @@
             </div>
           </div>
           <div class="health-row">
-            <div class="health-icon-wrap hi-energy">⚡</div>
+            <div class="health-pip hp-energy"></div>
             <div class="health-info">
               <div class="health-name">Active energy</div>
               <div class="health-val" id="h-cal">—</div>
@@ -559,7 +465,7 @@
             </div>
           </div>
           <div class="health-row">
-            <div class="health-icon-wrap hi-hr">❤️</div>
+            <div class="health-pip hp-hr"></div>
             <div class="health-info">
               <div class="health-name">Resting HR</div>
               <div class="health-val" id="h-hr">—</div>
@@ -570,51 +476,61 @@
     </div>
   </div>
 
-  <!-- LSAT PAGE -->
+  <!-- ══ LSAT ═══════════════════════════════════════════════════ -->
   <div class="page" id="page-lsat">
     <div class="header">
-      <div class="header-left">
-        <h1>LSAT</h1>
-        <div class="date">August 10, 2025 exam</div>
+      <div>
+        <div class="header-title">LSAT</div>
+        <div class="header-sub">August 10 exam</div>
       </div>
       <div class="header-badge" id="lsat-days2">— days</div>
     </div>
+
     <div class="card">
-      <div class="lsat-score-row">
-        <span class="lsat-now">150</span>
-        <span class="lsat-arrow">→</span>
-        <span class="lsat-goal">165</span>
+      <div class="score-row">
+        <span class="score-now">150</span>
+        <span class="score-arrow">→</span>
+        <span class="score-goal">165</span>
       </div>
-      <div class="lsat-meta">+15 points needed · 7Sage diagnostic</div>
-      <div class="lsat-track"><div class="lsat-track-fill" id="lsat-bar2" style="width:0%"></div></div>
-      <div class="lsat-stats">
-        <div class="lsat-stat"><div class="lsat-stat-val" id="ls2-today">0h</div><div class="lsat-stat-label">Today</div></div>
-        <div class="lsat-stat"><div class="lsat-stat-val" id="ls2-week">0h</div><div class="lsat-stat-label">Week</div></div>
-        <div class="lsat-stat"><div class="lsat-stat-val" id="ls2-total">0h</div><div class="lsat-stat-label">Total</div></div>
+      <div class="score-meta">+15 pts needed · 7Sage diagnostic</div>
+      <div class="score-track"><div class="score-fill" id="lsat-bar2" style="width:0%"></div></div>
+      <div class="stat-row">
+        <div class="stat-item"><div class="stat-val" id="ls2-today">0h</div><div class="stat-label">Today</div></div>
+        <div class="stat-item"><div class="stat-val" id="ls2-week">0h</div><div class="stat-label">Week</div></div>
+        <div class="stat-item"><div class="stat-val" id="ls2-total">0h</div><div class="stat-label">Total</div></div>
       </div>
     </div>
-    <div class="section-title">Log a session</div>
-    <div class="card">
-      <div class="log-input-row">
-        <input class="log-input" id="study-input2" type="text" placeholder='"2h logic games, struggled"' />
-        <button class="log-submit" onclick="logStudy2()">Log</button>
-      </div>
-      <div class="log-entries" id="study-log2"></div>
+
+    <div class="section-label">Study hours — last 7 days</div>
+    <div class="card" id="study-chart-card">
+      <div id="study-chart"></div>
     </div>
-    <div class="section-title">All sessions</div>
+
+    <div class="section-label">Log a session</div>
     <div class="card">
-      <div id="all-sessions"><div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">No sessions logged yet</div></div>
+      <div class="input-row">
+        <input class="input-field" id="study-input2" type="text" placeholder='"2h LR, struggled with flaw"' />
+        <button class="btn-teal" onclick="logStudy('study-input2')">Log</button>
+      </div>
+      <div class="log-list" id="study-log2"></div>
+    </div>
+
+    <div class="section-label">All sessions</div>
+    <div class="card">
+      <div id="all-sessions"><div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">No sessions yet</div></div>
     </div>
   </div>
 
-  <!-- TASKS PAGE -->
+  <!-- ══ TASKS ══════════════════════════════════════════════════ -->
   <div class="page" id="page-tasks">
     <div class="header">
-      <div class="header-left">
-        <h1>Assignments</h1>
-        <div class="date" id="tasks-meta"></div>
+      <div>
+        <div class="header-title">Assignments</div>
+        <div class="header-sub" id="tasks-meta"></div>
       </div>
     </div>
+    <div id="due-banner"></div>
+    <div class="progress-wrap" id="task-progress"></div>
     <div class="tab-row">
       <button class="tab-btn active" onclick="switchTab('all',this)">All</button>
       <button class="tab-btn" onclick="switchTab('phil',this)">Phil 110</button>
@@ -624,26 +540,27 @@
     </div>
     <div class="task-list" id="task-list"></div>
     <div class="add-task-row">
-      <input class="add-task-input" id="new-task" type="text" placeholder="Add assignment..." />
-      <select class="add-task-select" id="new-tag">
+      <input class="input-field" id="new-task" type="text" placeholder="Add assignment..." />
+      <select class="add-task-sel" id="new-tag">
         <option value="phil">Phil</option>
         <option value="arthc">ARTHC</option>
         <option value="lsat">LSAT</option>
         <option value="other">Other</option>
       </select>
-      <button class="add-task-btn" onclick="addTask()">+</button>
+      <button class="btn-blue" onclick="addTask()">+</button>
     </div>
   </div>
 
-  <!-- INSIGHTS PAGE -->
+  <!-- ══ INSIGHTS ═══════════════════════════════════════════════ -->
   <div class="page" id="page-insights">
     <div class="header">
-      <div class="header-left">
-        <h1>Insights</h1>
-        <div class="date">AI-powered analysis</div>
+      <div>
+        <div class="header-title">Insights</div>
+        <div class="header-sub">Your performance at a glance</div>
       </div>
     </div>
-    <div class="insight-card insight-teal">
+
+    <div class="insight-card i-teal">
       <div class="insight-label">LSAT pace</div>
       <div class="insight-text" id="ins-pace">Loading...</div>
     </div>
@@ -651,312 +568,460 @@
       <div class="insight-label">Today's focus</div>
       <div class="insight-text">Log your study session and habits to unlock personalized daily insights from Claude.</div>
     </div>
-    <div class="insight-card insight-amber">
+    <div class="insight-card i-amber">
       <div class="insight-label">Upcoming deadlines</div>
       <div class="insight-text" id="ins-deadlines">Loading...</div>
     </div>
-    <div class="insight-card insight-purple">
-      <div class="insight-label">Habit streak</div>
-      <div class="insight-text" id="ins-habits">Log your habits to see streak analysis.</div>
+    <div class="insight-card i-purple">
+      <div class="insight-label">Habit history — last 7 days</div>
+      <div class="hh-grid" id="habit-history-chart"></div>
     </div>
+
     <div style="margin-top:8px">
-      <button class="big-btn big-btn-teal" onclick="openClaude('analyze')">✨ Get AI insights from Claude</button>
-      <button class="big-btn" onclick="openClaude('plan')">📋 Plan tomorrow with Claude</button>
-      <button class="big-btn" onclick="openClaude('health')">❤️ Sync Apple Health data</button>
+      <button class="big-btn accent" onclick="openClaude('analyze')">Get AI insights from Claude →</button>
+      <button class="big-btn" onclick="openClaude('plan')">Plan tomorrow with Claude →</button>
+      <button class="big-btn" onclick="openClaude('health')">Sync Apple Health data →</button>
     </div>
   </div>
-</div>
 
-<!-- Bottom Nav -->
+</div><!-- /app -->
+
+<!-- ══ BOTTOM NAV ═════════════════════════════════════════════ -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="goPage('today')" id="nav-today">
-    <div class="nav-icon">🏠</div>
     <div class="nav-label">Today</div>
+    <div class="nav-pip"></div>
   </div>
   <div class="nav-item" onclick="goPage('lsat')" id="nav-lsat">
-    <div class="nav-icon">🧠</div>
     <div class="nav-label">LSAT</div>
+    <div class="nav-pip"></div>
   </div>
   <div class="nav-item" onclick="goPage('tasks')" id="nav-tasks">
-    <div class="nav-icon">📋</div>
     <div class="nav-label">Tasks</div>
+    <div class="nav-pip"></div>
   </div>
   <div class="nav-item" onclick="goPage('insights')" id="nav-insights">
-    <div class="nav-icon">✨</div>
     <div class="nav-label">Insights</div>
+    <div class="nav-pip"></div>
   </div>
 </div>
 
 <script>
-const EXAM_DATE = new Date('2025-08-10');
-const TODAY = new Date();
+// ══ Constants ═════════════════════════════════════════════════
+const EXAM_DATE  = new Date('2026-08-10');
+const TODAY      = new Date();
+const STATE_KEY  = 'life_os_v3';
 
-const S = {
-  study: { today: 0, week: 0, total: 0, section: null },
-  studyLog: [],
-  habits: [
-    { id:'exercise', name:'Exercise', emoji:'🏃', streak:0, done:false },
-    { id:'lsat', name:'LSAT study', emoji:'🧠', streak:0, done:false },
-    { id:'classwork', name:'Classwork', emoji:'📚', streak:0, done:false },
-    { id:'sleep', name:'Sleep 7h+', emoji:'😴', streak:0, done:false },
-  ],
-  tasks: [
-    { id:1, text:'#10 Memes on Aurelius', tag:'phil', due:'May 27', done:false },
-    { id:2, text:'Third application: ethics date', tag:'phil', due:'May 27', done:false },
-    { id:3, text:'Visual Analysis 4', tag:'arthc', due:'May 28', done:false },
-    { id:4, text:'#11 General conference response', tag:'phil', due:'May 29', done:false },
-    { id:5, text:'#12 Gandhi Bio & Movie', tag:'phil', due:'Jun 1', done:false },
-    { id:6, text:'#13 Bonhoeffer & Fireproof', tag:'phil', due:'Jun 3', done:false },
-    { id:7, text:'Visual Analysis 5', tag:'arthc', due:'Jun 4', done:false },
-    { id:8, text:'#14 Phil memoir: Robinson & Levinas', tag:'phil', due:'Jun 5', done:false },
-    { id:9, text:'Fourth application: meet someone new', tag:'phil', due:'Jun 5', done:false },
-    { id:10, text:'#15 Questions on James', tag:'phil', due:'Jun 8', done:false },
-    { id:11, text:'Fifth application: worship service', tag:'phil', due:'Jun 8', done:false },
-    { id:12, text:'#16 Dialogue on problem of evil', tag:'phil', due:'Jun 10', done:false },
-    { id:13, text:'#17 Phil memoir on Nietzsche', tag:'phil', due:'Jun 12', done:false },
-    { id:14, text:'Sixth application: atheist interview', tag:'phil', due:'Jun 12', done:false },
-    { id:15, text:'#18 Something weird on C.S. Lewis & Shadowlands', tag:'phil', due:'Jun 15', done:false },
-    { id:16, text:'Read conclusion', tag:'phil', due:'Jun 15', done:false },
-    { id:17, text:'ARTHC Final Exam', tag:'arthc', due:'Jun 15', done:false },
-    { id:18, text:'Phil take-home final', tag:'phil', due:'Jun 17', done:false },
-    { id:19, text:'Phil in-class final', tag:'phil', due:'Jun 17', done:false },
-  ],
-  weekEx: [false,false,false,false,false,false,false],
-  activeTab: 'all',
-  activePage: 'today',
-};
+// ══ Date utils ════════════════════════════════════════════════
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+const MONTHS = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
 
 function daysUntil(dateStr) {
-  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-  const [m, d] = dateStr.split(' ');
-  const date = new Date(2025, months[m], parseInt(d));
+  if (!dateStr || dateStr === 'TBD') return 999;
+  const parts = dateStr.split(' ');
+  if (parts.length < 2) return 999;
+  const [m, d] = parts;
+  const year = new Date().getFullYear();
+  const date = new Date(year, MONTHS[m], parseInt(d));
   return Math.ceil((date - TODAY) / 86400000);
 }
 
 function dueLabel(dateStr) {
+  if (dateStr === 'TBD') return { text: 'No due date', cls: 'due-ok' };
   const d = daysUntil(dateStr);
-  if (d < 0) return { text: dateStr + ' · overdue', cls:'due-urgent' };
-  if (d === 0) return { text: dateStr + ' · today', cls:'due-urgent' };
-  if (d === 1) return { text: dateStr + ' · tomorrow', cls:'due-soon' };
-  if (d <= 4) return { text: dateStr + ' · in '+d+' days', cls:'due-soon' };
-  return { text: dateStr, cls:'due-ok' };
+  if (d < 0)   return { text: dateStr + ' · overdue',   cls: 'due-urgent' };
+  if (d === 0) return { text: dateStr + ' · today',     cls: 'due-urgent' };
+  if (d === 1) return { text: dateStr + ' · tomorrow',  cls: 'due-soon' };
+  if (d <= 5)  return { text: dateStr + ' · in ' + d + 'd', cls: 'due-soon' };
+  return { text: dateStr, cls: 'due-ok' };
 }
 
+function getLast7Days() {
+  const abbr = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    days.push({ key, label: abbr[d.getDay()], isToday: i === 0 });
+  }
+  return days;
+}
+
+// ══ Default state ═════════════════════════════════════════════
+function defaultState() {
+  return {
+    lastDate: todayKey(),
+    study: { today: 0, week: 0, total: 0, section: null },
+    dailyHours: {},
+    studyLog: [],
+    habits: [
+      { id:'exercise',  name:'Exercise',   streak:0, done:false, history:{} },
+      { id:'lsat',      name:'LSAT study', streak:0, done:false, history:{} },
+      { id:'classwork', name:'Classwork',  streak:0, done:false, history:{} },
+      { id:'sleep',     name:'Sleep 7h+',  streak:0, done:false, history:{} },
+    ],
+    tasks: [
+      { id:1,  text:'#10 Memes on Aurelius',                tag:'phil',  due:'May 27', done:false },
+      { id:2,  text:'Third application: ethics date',       tag:'phil',  due:'May 27', done:false },
+      { id:3,  text:'Visual Analysis 4',                    tag:'arthc', due:'May 28', done:false },
+      { id:4,  text:'#11 General conference response',      tag:'phil',  due:'May 29', done:false },
+      { id:5,  text:'#12 Gandhi Bio & Movie',               tag:'phil',  due:'Jun 1',  done:false },
+      { id:6,  text:'#13 Bonhoeffer & Fireproof',           tag:'phil',  due:'Jun 3',  done:false },
+      { id:7,  text:'Visual Analysis 5',                    tag:'arthc', due:'Jun 4',  done:false },
+      { id:8,  text:'#14 Phil memoir: Robinson & Levinas',  tag:'phil',  due:'Jun 5',  done:false },
+      { id:9,  text:'Fourth application: meet someone new', tag:'phil',  due:'Jun 5',  done:false },
+      { id:10, text:'#15 Questions on James',               tag:'phil',  due:'Jun 8',  done:false },
+      { id:11, text:'Fifth application: worship service',   tag:'phil',  due:'Jun 8',  done:false },
+      { id:12, text:'#16 Dialogue on problem of evil',      tag:'phil',  due:'Jun 10', done:false },
+      { id:13, text:'#17 Phil memoir on Nietzsche',         tag:'phil',  due:'Jun 12', done:false },
+      { id:14, text:'Sixth application: atheist interview', tag:'phil',  due:'Jun 12', done:false },
+      { id:15, text:'#18 C.S. Lewis & Shadowlands',         tag:'phil',  due:'Jun 15', done:false },
+      { id:16, text:'Read conclusion',                      tag:'phil',  due:'Jun 15', done:false },
+      { id:17, text:'ARTHC Final Exam',                     tag:'arthc', due:'Jun 15', done:false },
+      { id:18, text:'Phil take-home final',                 tag:'phil',  due:'Jun 17', done:false },
+      { id:19, text:'Phil in-class final',                  tag:'phil',  due:'Jun 17', done:false },
+    ],
+    activeTab: 'all',
+  };
+}
+
+// ══ Load / save ═══════════════════════════════════════════════
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (!raw) return defaultState();
+    const s = JSON.parse(raw);
+    const key = todayKey();
+    if (s.lastDate !== key) {
+      s.habits.forEach(h => { h.done = false; });
+      s.study.today = 0;
+      s.lastDate = key;
+    }
+    // Merge in any new default tasks not yet saved
+    const def = defaultState();
+    const ids = new Set(s.tasks.map(t => t.id));
+    def.tasks.forEach(t => { if (!ids.has(t.id)) s.tasks.push(t); });
+    if (!s.dailyHours) s.dailyHours = {};
+    return s;
+  } catch(e) { return defaultState(); }
+}
+
+function save() {
+  try { localStorage.setItem(STATE_KEY, JSON.stringify(S)); } catch(e) {}
+}
+
+let S = loadState();
+
+// ══ SVG ring ══════════════════════════════════════════════════
+function svgRing(pct, size, stroke, fg, bg) {
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const off = c * (1 - Math.min(1, pct));
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${bg}" stroke-width="${stroke}"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${fg}" stroke-width="${stroke}"
+      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"
+      stroke-linecap="round" transform="rotate(-90 ${size/2} ${size/2})"/>
+  </svg>`;
+}
+
+// ══ Navigation ════════════════════════════════════════════════
 function goPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.getElementById('nav-'+id).classList.add('active');
-  S.activePage = id;
-  if (id === 'tasks') renderTasks();
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  if (id === 'tasks')    renderTasks();
   if (id === 'insights') renderInsights();
-  if (id === 'lsat') renderLSATPage();
+  if (id === 'lsat')     renderLSATPage();
+  save();
 }
 
+// ══ Init ══════════════════════════════════════════════════════
 function init() {
   const opts = { weekday:'long', month:'long', day:'numeric' };
   document.getElementById('header-date').textContent = TODAY.toLocaleDateString('en-US', opts);
   const daysLeft = Math.ceil((EXAM_DATE - TODAY) / 86400000);
-  document.getElementById('lsat-countdown').textContent = daysLeft + ' days';
-  document.getElementById('lsat-days2').textContent = daysLeft + ' days';
+  const badge = daysLeft > 0 ? daysLeft + ' days' : 'Exam passed';
+  document.getElementById('lsat-countdown').textContent = badge;
+  document.getElementById('lsat-days2').textContent = badge;
   const progress = Math.round(((150 - 120) / (165 - 120)) * 100);
   document.getElementById('lsat-bar').style.width = progress + '%';
+  updateStudyUI();
   renderHabits();
-  renderWeekStrip();
   renderTasks();
   updateGlance();
 }
 
+// ══ Habits ════════════════════════════════════════════════════
 function renderHabits() {
-  document.getElementById('habit-list').innerHTML = S.habits.map(h => `
-    <div class="habit-item ${h.done?'done':''}" onclick="toggleHabit('${h.id}')">
-      <div class="habit-left">
-        <div class="habit-emoji">${h.emoji}</div>
-        <div>
-          <div class="habit-name">${h.name}</div>
-          <div class="habit-streak">${h.streak > 0 ? h.streak+' day streak 🔥' : 'no streak yet'}</div>
-        </div>
+  const days = getLast7Days();
+  document.getElementById('habit-list').innerHTML = S.habits.map(h => {
+    const dots = days.map(day => {
+      const done = h.history[day.key];
+      const cls  = done ? 'done' : day.isToday ? 'is-today' : '';
+      return `<div class="h-dot ${cls}"></div>`;
+    }).join('');
+    const streakTxt = h.streak > 0 ? h.streak + ' day streak' : 'No streak yet';
+    return `<div class="habit-item" onclick="toggleHabit('${h.id}')">
+      <div class="habit-check ${h.done ? 'done' : ''}">
+        <span class="habit-check-mark">✓</span>
       </div>
-      <div class="habit-circle ${h.done?'checked':''}">
-        <span class="habit-checkmark">✓</span>
+      <div class="habit-info">
+        <div class="habit-name">${h.name}</div>
+        <div class="habit-streak">${streakTxt}</div>
       </div>
-    </div>
-  `).join('');
+      <div class="habit-dots">${dots}</div>
+    </div>`;
+  }).join('');
+
+  const done = S.habits.filter(h => h.done).length;
+  const pct  = done / S.habits.length;
+  document.getElementById('habit-ring').innerHTML = svgRing(pct, 36, 4, 'var(--teal)', 'var(--bg4)');
+  document.getElementById('habit-ring-label').textContent = `${done} / ${S.habits.length}`;
 }
 
 function toggleHabit(id) {
-  const h = S.habits.find(x => x.id===id);
+  const h = S.habits.find(x => x.id === id);
   if (!h) return;
   h.done = !h.done;
-  if (h.done) h.streak++; else if (h.streak > 0) h.streak--;
-  if (id === 'exercise') {
-    const i = (TODAY.getDay()+6)%7;
-    S.weekEx[i] = h.done;
-    renderWeekStrip();
-  }
+  const key = todayKey();
+  if (h.done) { h.streak++; h.history[key] = true; }
+  else        { if (h.streak > 0) h.streak--; h.history[key] = false; }
   renderHabits();
   updateGlance();
+  save();
 }
 
-function renderWeekStrip() {
-  const days = ['M','T','W','T','F','S','S'];
-  const todayIdx = (TODAY.getDay()+6)%7;
-  document.getElementById('week-strip').innerHTML = days.map((d,i) => {
-    const cls = S.weekEx[i] ? 'done' : i===todayIdx ? 'today' : '';
-    return `<div class="week-day ${cls}">${d}</div>`;
+// ══ Study ═════════════════════════════════════════════════════
+function logStudy(inputId) {
+  const inp = document.getElementById(inputId);
+  const val = inp.value.trim();
+  if (!val) return;
+  const m   = val.match(/(\d+(?:\.\d+)?)\s*h/i);
+  const hrs = m ? parseFloat(m[1]) : 1;
+  const secs = [['logic games','LG'],['lg','LG'],['logical reasoning','LR'],['lr','LR'],['reading comp','RC'],['rc','RC']];
+  for (const [k, v] of secs) { if (val.toLowerCase().includes(k)) { S.study.section = v; break; } }
+  S.study.today = +(S.study.today + hrs).toFixed(1);
+  S.study.week  = +(S.study.week  + hrs).toFixed(1);
+  S.study.total = +(S.study.total + hrs).toFixed(1);
+  const key = todayKey();
+  S.dailyHours[key] = +((S.dailyHours[key] || 0) + hrs).toFixed(1);
+  const now = new Date();
+  S.studyLog.unshift({ text: val, hrs, time: now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' }) });
+  inp.value = '';
+  // Auto-check LSAT habit
+  const lh = S.habits.find(x => x.id === 'lsat');
+  if (lh && !lh.done) { lh.done = true; lh.streak++; lh.history[key] = true; renderHabits(); }
+  updateStudyUI();
+  updateGlance();
+  save();
+}
+
+function updateStudyUI() {
+  const h = S.study;
+  ['g-study','ls-today','ls2-today'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = h.today + 'h'; });
+  document.getElementById('gb-study').style.width = Math.min(100, (h.today / 2) * 100) + '%';
+  ['ls-week','ls2-week'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = h.week + 'h'; });
+  ['ls-total','ls2-total'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = h.total + 'h'; });
+  const secEl = document.getElementById('ls-section');
+  if (secEl) secEl.textContent = h.section || '—';
+
+  const entries = S.studyLog.slice(0, 3).map(e =>
+    `<div class="log-item"><span class="log-text">${e.text}</span><span class="log-meta">${e.hrs}h · ${e.time}</span></div>`
+  ).join('');
+  ['study-log','study-log2'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = entries; });
+
+  const allEl = document.getElementById('all-sessions');
+  if (allEl) allEl.innerHTML = S.studyLog.length
+    ? S.studyLog.map(e => `<div class="log-item"><span class="log-text">${e.text}</span><span class="log-meta">${e.hrs}h · ${e.time}</span></div>`).join('')
+    : '<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">No sessions yet</div>';
+
+  renderStudyChart();
+}
+
+function renderStudyChart() {
+  const wrap = document.getElementById('study-chart');
+  if (!wrap) return;
+  const days   = getLast7Days();
+  const CHART_H = 80;
+  const maxHrs = Math.max(2, ...days.map(d => S.dailyHours[d.key] || 0));
+  const goalH  = Math.round((2 / maxHrs) * CHART_H);
+
+  const bars = days.map(d => {
+    const hrs  = S.dailyHours[d.key] || 0;
+    const barH = hrs > 0 ? Math.max(3, Math.round((hrs / maxHrs) * CHART_H)) : 0;
+    const barBg     = d.isToday ? 'var(--teal)' : 'var(--teal-bg)';
+    const barBorder = d.isToday ? 'var(--teal)' : 'var(--teal-border)';
+    const dayStyle  = d.isToday ? 'color:var(--teal);font-weight:700' : '';
+    return `<div class="bar-col">
+      <div style="height:${CHART_H}px;width:100%;display:flex;align-items:flex-end">
+        <div style="width:100%;height:${barH}px;background:${barBg};border:1px solid ${barBorder};border-bottom:none;border-radius:4px 4px 0 0"></div>
+      </div>
+      <div class="bar-day" style="${dayStyle}">${d.label}</div>
+      <div class="bar-hrs">${hrs > 0 ? hrs + 'h' : ''}</div>
+    </div>`;
   }).join('');
+
+  wrap.innerHTML = `
+    <div class="chart-label">Daily study hours · goal: 2h/day</div>
+    <div class="chart-outer" style="height:${CHART_H}px">
+      <div style="position:absolute;left:0;right:0;bottom:${goalH}px;border-top:1px dashed rgba(0,0,0,0.14);pointer-events:none">
+        <span style="position:absolute;right:0;top:-9px;font-size:9px;color:var(--text3);font-weight:600">2h</span>
+      </div>
+      <div class="chart-bars" style="height:${CHART_H}px">${bars}</div>
+    </div>`;
 }
 
+function renderLSATPage() {
+  const progress = Math.round(((150 - 120) / (165 - 120)) * 100);
+  const bar2 = document.getElementById('lsat-bar2');
+  if (bar2) bar2.style.width = progress + '%';
+  updateStudyUI();
+}
+
+// ══ Tasks ═════════════════════════════════════════════════════
 function renderTasks() {
-  let tasks = S.activeTab==='all' ? S.tasks : S.tasks.filter(t=>t.tag===S.activeTab);
-  const undone = tasks.filter(t=>!t.done).sort((a,b)=>daysUntil(a.due)-daysUntil(b.due));
-  const done = tasks.filter(t=>t.done);
+  const tab   = S.activeTab || 'all';
+  const tasks = tab === 'all' ? S.tasks : S.tasks.filter(t => t.tag === tab);
+  const undone = tasks.filter(t => !t.done).sort((a, b) => daysUntil(a.due) - daysUntil(b.due));
+  const done   = tasks.filter(t =>  t.done);
   const sorted = [...undone, ...done];
+
   document.getElementById('task-list').innerHTML = sorted.map(t => {
     const dl = dueLabel(t.due);
-    return `<div class="task-item ${t.done?'done':''}" onclick="toggleTask(${t.id})">
-      <div class="task-box ${t.done?'checked':''}"><span class="task-box-check">✓</span></div>
-      <div class="task-info">
+    const tagLabel = t.tag === 'phil' ? 'Phil 110' : t.tag === 'arthc' ? 'ARTHC 202' : t.tag.toUpperCase();
+    return `<div class="task-item ${t.done ? 'done' : ''}">
+      <div class="task-box ${t.done ? 'checked' : ''}" onclick="toggleTask(${t.id})">
+        <span class="task-check">✓</span>
+      </div>
+      <div class="task-info" onclick="toggleTask(${t.id})">
         <div class="task-text">${t.text}</div>
         <div class="task-meta">
-          <span class="task-tag tt-${t.tag}">${t.tag==='phil'?'Phil 110':t.tag==='arthc'?'ARTHC 202':t.tag.toUpperCase()}</span>
+          <span class="task-tag tt-${t.tag}">${tagLabel}</span>
           <span class="task-due ${dl.cls}">${dl.text}</span>
         </div>
       </div>
+      <button class="task-del" onclick="deleteTask(${t.id},event)">×</button>
     </div>`;
   }).join('');
-  const done2 = S.tasks.filter(t=>t.done).length;
-  document.getElementById('tasks-meta').textContent = done2+'/'+S.tasks.length+' completed';
+
+  // Progress bar
+  const total     = S.tasks.length;
+  const doneCount = S.tasks.filter(t => t.done).length;
+  const pct       = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+  document.getElementById('task-progress').innerHTML = `
+    <div class="progress-meta">
+      <span>Overall progress</span>
+      <span>${doneCount} / ${total} &nbsp;(${pct}%)</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+
+  // Due this week banner
+  const urgent = S.tasks.filter(t => !t.done && t.due !== 'TBD' && daysUntil(t.due) >= 0 && daysUntil(t.due) <= 7);
+  const banner = document.getElementById('due-banner');
+  banner.innerHTML = urgent.length
+    ? `<div class="due-banner">
+        <div class="due-banner-title">Due this week — ${urgent.length} assignment${urgent.length > 1 ? 's' : ''}</div>
+        ${urgent.map(t => `<div class="due-banner-item">${t.text} <span style="color:var(--text3)">· ${t.due}</span></div>`).join('')}
+       </div>`
+    : '';
+
+  document.getElementById('tasks-meta').textContent = doneCount + ' / ' + total + ' completed';
   updateGlance();
 }
 
 function switchTab(tab, el) {
   S.activeTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   renderTasks();
 }
 
 function toggleTask(id) {
-  const t = S.tasks.find(x=>x.id===id);
-  if (t) { t.done = !t.done; renderTasks(); }
+  const t = S.tasks.find(x => x.id === id);
+  if (t) { t.done = !t.done; renderTasks(); save(); }
+}
+
+function deleteTask(id, e) {
+  e.stopPropagation();
+  S.tasks = S.tasks.filter(t => t.id !== id);
+  renderTasks();
+  save();
 }
 
 function addTask() {
   const inp = document.getElementById('new-task');
   const tag = document.getElementById('new-tag').value;
   if (!inp.value.trim()) return;
-  S.tasks.push({ id:Date.now(), text:inp.value.trim(), tag, due:'TBD', done:false });
+  S.tasks.push({ id: Date.now(), text: inp.value.trim(), tag, due: 'TBD', done: false });
   inp.value = '';
   renderTasks();
+  save();
 }
 
-function logStudy() {
-  const inp = document.getElementById('study-input');
-  _logStudy(inp);
-}
-function logStudy2() {
-  const inp = document.getElementById('study-input2');
-  _logStudy(inp);
-}
-
-function _logStudy(inp) {
-  const val = inp.value.trim();
-  if (!val) return;
-  const m = val.match(/(\d+(?:\.\d+)?)\s*h/i);
-  const hrs = m ? parseFloat(m[1]) : 1;
-  const secs = [['logic games','LG'],['lg','LG'],['logical reasoning','LR'],['lr','LR'],['reading comp','RC'],['rc','RC']];
-  for (const [k,v] of secs) { if (val.toLowerCase().includes(k)) { S.study.section=v; break; } }
-  S.study.today = +(S.study.today+hrs).toFixed(1);
-  S.study.week = +(S.study.week+hrs).toFixed(1);
-  S.study.total = +(S.study.total+hrs).toFixed(1);
-  const now = new Date();
-  S.studyLog.unshift({ text:val, hrs, time:now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) });
-  inp.value = '';
-  const lh = S.habits.find(x=>x.id==='lsat');
-  if (lh && !lh.done) { lh.done=true; lh.streak++; renderHabits(); }
-  updateStudyUI();
-  updateGlance();
-}
-
-function updateStudyUI() {
-  const h = S.study;
-  document.getElementById('g-study').textContent = h.today+'h';
-  document.getElementById('gb-study').style.width = Math.min(100,(h.today/2)*100)+'%';
-  document.getElementById('ls-today').textContent = h.today+'h';
-  document.getElementById('ls-week').textContent = h.week+'h';
-  document.getElementById('ls-total').textContent = h.total+'h';
-  document.getElementById('ls-section').textContent = h.section||'—';
-  const entries = S.studyLog.slice(0,3).map(e=>`
-    <div class="log-entry">
-      <span class="log-entry-text">${e.text}</span>
-      <span class="log-entry-meta">${e.hrs}h · ${e.time}</span>
-    </div>`).join('');
-  document.getElementById('study-log').innerHTML = entries;
-  if (document.getElementById('ls2-today')) {
-    document.getElementById('ls2-today').textContent = h.today+'h';
-    document.getElementById('ls2-week').textContent = h.week+'h';
-    document.getElementById('ls2-total').textContent = h.total+'h';
-    document.getElementById('study-log2').innerHTML = entries;
-    document.getElementById('all-sessions').innerHTML = S.studyLog.length
-      ? S.studyLog.map(e=>`<div class="log-entry"><span class="log-entry-text">${e.text}</span><span class="log-entry-meta">${e.hrs}h · ${e.time}</span></div>`).join('')
-      : '<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">No sessions yet</div>';
-  }
-}
-
-function renderLSATPage() {
-  const progress = Math.round(((150-120)/(165-120))*100);
-  if (document.getElementById('lsat-bar2')) document.getElementById('lsat-bar2').style.width = progress+'%';
-  updateStudyUI();
-}
-
+// ══ Glance ════════════════════════════════════════════════════
 function updateGlance() {
-  const doneH = S.habits.filter(h=>h.done).length;
-  document.getElementById('g-habits').textContent = doneH+'/'+S.habits.length;
-  const exH = S.habits.find(h=>h.id==='exercise');
-  document.getElementById('g-ex').textContent = exH&&exH.done ? '✓' : '—';
-  document.getElementById('g-ex-sub').textContent = (exH?exH.streak:0)+' day streak';
-  const soon = S.tasks.filter(t=>!t.done && t.due!=='TBD' && daysUntil(t.due)>=0 && daysUntil(t.due)<=7);
-  document.getElementById('g-due').textContent = soon.length;
-  document.getElementById('g-due-sub').textContent = soon.length ? 'next '+days+'d' : 'this week';
-  function days() { return soon.length ? daysUntil(soon[0].due) : 7; }
+  const doneH = S.habits.filter(h => h.done).length;
+  document.getElementById('g-habits').textContent = doneH + '/' + S.habits.length;
+  const exH = S.habits.find(h => h.id === 'exercise');
+  document.getElementById('g-ex').textContent    = exH && exH.done ? '✓' : '—';
+  document.getElementById('g-ex-sub').textContent = (exH ? exH.streak : 0) + ' day streak';
+  const soon = S.tasks.filter(t => !t.done && t.due !== 'TBD' && daysUntil(t.due) >= 0 && daysUntil(t.due) <= 7);
+  document.getElementById('g-due').textContent     = soon.length || '—';
+  document.getElementById('g-due-sub').textContent = soon.length ? 'this week' : 'all clear';
 }
 
+// ══ Insights ══════════════════════════════════════════════════
 function renderInsights() {
-  const daysLeft = Math.ceil((EXAM_DATE - TODAY) / 86400000);
-  const paceHrs = Math.round(daysLeft * 2);
+  const daysLeft = Math.max(0, Math.ceil((EXAM_DATE - TODAY) / 86400000));
+  const paceHrs  = Math.round(daysLeft * 2);
   document.getElementById('ins-pace').textContent =
-    daysLeft+' days until your August 10 exam. At 2h/day you need ~'+paceHrs+' more hours. You\'ve logged '+S.study.total+'h total. '+
-    (S.study.total > 0 ? 'Keep it up — consistency beats cramming.' : 'Log your first session to start tracking pace.');
+    daysLeft + ' days to Aug 10. At 2h/day you need ~' + paceHrs + ' more hours. ' +
+    (S.study.total > 0
+      ? 'You\'ve logged ' + S.study.total + 'h total. Keep the streak going.'
+      : 'Log your first session to start tracking pace.');
 
-  const upcoming = S.tasks.filter(t=>!t.done && t.due!=='TBD' && daysUntil(t.due)>=0).slice(0,3);
+  const upcoming = S.tasks.filter(t => !t.done && t.due !== 'TBD' && daysUntil(t.due) >= 0).slice(0, 4);
   document.getElementById('ins-deadlines').textContent = upcoming.length
-    ? upcoming.map(t=>t.text+' ('+t.due+')').join(' · ')
-    : 'All caught up! No urgent deadlines.';
+    ? upcoming.map(t => t.text + ' (' + t.due + ')').join(' · ')
+    : 'All caught up — no urgent deadlines.';
 
-  const topStreak = [...S.habits].sort((a,b)=>b.streak-a.streak)[0];
-  document.getElementById('ins-habits').textContent = topStreak && topStreak.streak > 0
-    ? 'Best streak: '+topStreak.name+' at '+topStreak.streak+' days. '+S.habits.filter(h=>h.done).length+'/4 habits done today.'
-    : 'Check off your habits to build streaks. Consistency is everything this close to the exam.';
+  // Habit history grid
+  const days = getLast7Days();
+  const dayRow = `<div class="hh-day-row">${days.map(d => `<div class="hh-day-lbl">${d.label}</div>`).join('')}</div>`;
+  const rows   = S.habits.map(h => {
+    const dots = days.map(d => `<div class="hh-dot ${h.history[d.key] ? 'done' : ''}"></div>`).join('');
+    return `<div class="hh-row"><div class="hh-name">${h.name}</div><div class="hh-dots">${dots}</div></div>`;
+  }).join('');
+  document.getElementById('habit-history-chart').innerHTML = dayRow + rows;
 }
 
+// ══ Health ════════════════════════════════════════════════════
 function promptHealthSync() {
-  alert('Open Claude on your iPhone, say:\n\n"Read my Apple Health data and tell me my sleep, steps, active energy, and resting heart rate from today"');
+  alert('Open Claude on your iPhone and say:\n\n"Read my Apple Health data — sleep duration, step count, active energy burned, and resting heart rate from today."');
 }
 
+// ══ Claude prompts ════════════════════════════════════════════
 function openClaude(type) {
   const msgs = {
-    analyze: 'Analyze my Life OS: studied '+S.study.today+'h today (total '+S.study.total+'h), '+S.habits.filter(h=>h.done).map(h=>h.name).join(', ')+' done. Give me 3 sharp insights and one recommendation.',
-    plan: 'Help me plan tomorrow. LSAT exam August 10. Today I studied '+S.study.today+'h. Upcoming: '+S.tasks.filter(t=>!t.done&&t.due!=='TBD'&&daysUntil(t.due)>=0).slice(0,3).map(t=>t.text+' ('+t.due+')').join(', ')+'. What should I prioritize?',
-    health: 'Read my Apple Health data for today — sleep duration, step count, active energy burned, and resting heart rate. Then give me a one-paragraph health summary.'
+    analyze: 'Analyze my Life OS: studied ' + S.study.today + 'h today (' + S.study.total + 'h total). Habits done: ' + S.habits.filter(h => h.done).map(h => h.name).join(', ') + '. Give me 3 sharp insights and one concrete recommendation.',
+    plan:    'Help me plan tomorrow. LSAT exam Aug 10, ' + Math.ceil((EXAM_DATE - TODAY) / 86400000) + ' days away. Today I studied ' + S.study.today + 'h. Upcoming assignments: ' + S.tasks.filter(t => !t.done && t.due !== 'TBD' && daysUntil(t.due) >= 0).slice(0,3).map(t => t.text + ' (' + t.due + ')').join(', ') + '. What should I prioritize?',
+    health:  'Read my Apple Health data for today — sleep duration, step count, active energy burned, and resting heart rate. Give me a brief health summary.',
   };
-  alert('Copy this into Claude:\n\n'+msgs[type]);
+  alert('Copy into Claude:\n\n' + msgs[type]);
 }
 
+// ══ Boot ══════════════════════════════════════════════════════
 init();
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 </script>
 </body>
